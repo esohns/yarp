@@ -12,8 +12,9 @@
 #include "ace/High_Res_Timer.h"
 #include "ace/Log_Msg.h"
 
-#include "common_tools.h"
 #include "common_file_tools.h"
+
+#include "common_log_tools.h"
 
 #include "common_ui_defines.h"
 //#include "common_ui_glade_definition.h"
@@ -66,75 +67,91 @@ test_u_main::print_usage (const std::string& programName_in)
 
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                           true);
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                           false);
 
-  std::cout << ACE_TEXT("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT(" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
+            << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DATA_SUB);
-  std::cout << ACE_TEXT("-d [DIR]    : graphics directory")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-d [DIR]    : graphics directory")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-g [FILE]   : graphics dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
+                                                          true);
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-i [FILE]   : item dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [FILE]   : item dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-l          : log to a file")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l          : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
+                                                          true);
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-m [FILE]   : magic dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]   : magic dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-t          : trace information")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t          : trace information")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
+                                                          true);
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GUI_GNOME_UI_FILE);
-  std::cout << ACE_TEXT("-u [FILE]   : UI file")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-u [FILE]   : UI file")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-v          : print version information and exit")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v          : print version information and exit")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
 } // end print_usage
 
@@ -155,13 +172,13 @@ test_u_main::process_arguments (int argc_in,
   // initialize configuration
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                           true);
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                           false);
 
   graphics_dictionary_out = configuration_path;
@@ -169,25 +186,38 @@ test_u_main::process_arguments (int argc_in,
   graphics_dictionary_out +=
       ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
+                                                          true);
   item_dictionary_out = configuration_path;
   item_dictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   item_dictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
   logToFile_out      = false;
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
+                                                          true);
   magic_dictionary_out = configuration_path;
   magic_dictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magic_dictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
   traceInformation_out = false;
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
+                                                          true);
   UI_file_out = configuration_path;
   UI_file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UI_file_out += ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GUI_GNOME_UI_FILE);
 
   graphics_directory_out = data_path;
-  graphics_directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphics_directory_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DATA_SUB);
 
   printVersionAndExit_out  = false;
 
@@ -284,7 +314,7 @@ test_u_main::process_arguments (int argc_in,
 
 void
 test_u_main::do_work (struct GTK_CBData& userData_in,
-                      const std::string& schemaDirectory_in,
+                      const std::string& schemaRepository_in,
                       const std::string& magicDictionary_in,
                       const std::string& itemDictionary_in,
                       const std::string& graphicsDictionary_in,
@@ -294,13 +324,24 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
   RPG_TRACE (ACE_TEXT ("test_u_main::do_work"));
 
   // step0a: initialize RPG engine
-  RPG_Engine_Common_Tools::initialize (schemaDirectory_in,
+  std::string schema_repository_string = schemaRepository_in;
+  std::string schema_repository_string_2 =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
+  std::vector<std::string> schema_directories_a;
+  schema_directories_a.push_back (schema_repository_string);
+  schema_directories_a.push_back (schema_repository_string_2);
+  RPG_Engine_Common_Tools::initialize (schema_directories_a,
                                        magicDictionary_in,
                                        itemDictionary_in,
                                        ACE_TEXT_ALWAYS_CHAR (""));
   struct RPG_Client_SDL_InputConfiguration input_configuration;
+#if defined (SDL_USE)
   input_configuration.key_repeat_initial_delay = SDL_DEFAULT_REPEAT_DELAY;
   input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
+#endif // SDL_USE
   input_configuration.use_UNICODE = true;
   struct RPG_Sound_SDLConfiguration sound_configuration;
   sound_configuration.frequency = RPG_SOUND_AUDIO_DEF_FREQUENCY;
@@ -309,7 +350,7 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
   sound_configuration.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
   if (!RPG_Client_Common_Tools::initialize (input_configuration,
                                             sound_configuration,
-                                            empty,
+                                            ACE_TEXT_ALWAYS_CHAR (""),
                                             RPG_SOUND_AMBIENT_DEF_USE_CD,
                                             RPG_SOUND_DEF_CACHESIZE,
                                             false,
@@ -324,11 +365,6 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
                 ACE_TEXT ("failed to RPG_Client_Common_Tools::initialize(): \"%m\", returning\n")));
     return;
   } // end IF
-  userData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
-  userData_in.GTKState.initializationHook = idle_initialize_UI_cb;
-  userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
-    std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
-  userData_in.GTKState.userData = &userData_in;
 
   userData_in.currentLevel.metadata.environment.plane
       = RPG_COMMON_PLANE_INVALID;
@@ -360,7 +396,7 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
       MAP_GENERATOR_DEF_NUM_AREAS;
   userData_in.mapConfiguration.square_rooms              =
       MAP_GENERATOR_DEF_SQUARE_ROOMS;
-  userData_in.schemaRepository                           = schemaDirectory_in;
+  userData_in.schemaRepository                           = schemaRepository_in;
 
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
@@ -370,16 +406,10 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
     return;
   } // end IF
 
-  int result = COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->wait ();
-  if (result == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Task_Base::wait(): \"%m\", returning\n")));
-    return;
-  } // end IF
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->wait (false); // wait for message queue ?
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 }
 
 void
@@ -430,48 +460,60 @@ test_u_main::run_i (int argc_in,
   } // end IF
 #endif
 
-  // step1 init/validate configuration
+  Common_File_Tools::initialize (argv_in[0]);
+
+  // step1 initialize/validate configuration
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                           true);
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                           false);
 
   // step1a: process commandline arguments
   std::string graphics_dictionary = configuration_path;
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphics_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DATA_SUB);
-  graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
+                                                          true);
   std::string item_dictionary     = configuration_path;
-  item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  item_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DATA_SUB);
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   item_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
+                                                          true);
   std::string magic_dictionary    = configuration_path;
-  magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  magic_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DATA_SUB);
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
+                                                          true);
   std::string UI_file             = configuration_path;
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UI_file += ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GUI_GNOME_UI_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          true);
   std::string schema_repository   = configuration_path;
-  schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_DATA_SUB);
 
   std::string graphics_directory  = data_path;
-  graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphics_directory += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DATA_SUB);
 
   // sanity check
   if (!Common_File_Tools::isDirectory (schema_repository))
@@ -502,9 +544,9 @@ test_u_main::run_i (int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
@@ -522,9 +564,9 @@ test_u_main::run_i (int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
@@ -537,9 +579,9 @@ test_u_main::run_i (int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
@@ -550,21 +592,21 @@ test_u_main::run_i (int argc_in,
   if (log_to_file)
     log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                  Common_File_Tools::basename (ACE_TEXT_ALWAYS_CHAR (argv_in[0]), true));
-  if (!Common_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename(argv_in[0])), // program name
-                                        log_file,                                         // logfile
-                                        false,                                            // log to syslog ?
-                                        false,                                            // trace messages ?
-                                        trace_information,                                // debug messages ?
-                                        NULL))                                            // logger
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
+                                            log_file,                                          // logfile
+                                            false,                                             // log to syslog ?
+                                            false,                                             // trace messages ?
+                                            trace_information,                                 // debug messages ?
+                                            NULL))                                             // logger
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
+                ACE_TEXT ("failed to Common_Log_Tools::initializeLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
@@ -588,13 +630,24 @@ test_u_main::run_i (int argc_in,
 //                                    argv_in,                              // cmdline
 //                                    NULL);                                // property name(s)
 //  ACE_ASSERT(gnomeProgram);
+  Common_UI_GTK_Configuration_t gtk_configuration;
+  gtk_configuration.argc = argc_in;
+  gtk_configuration.argv = argv_in;
   struct GTK_CBData user_data;
-  Common_UI_GladeDefinition ui_definition (argc_in,
-                                           argv_in);
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
-                                                            argv_in,
-                                                            &user_data.GTKState,
-                                                            &ui_definition);
+  gtk_configuration.CBData = &user_data;
+  Common_UI_GtkBuilderDefinition_t ui_definition;
+  gtk_configuration.definition = &ui_definition;
+  gtk_configuration.eventHooks.initHook = idle_initialize_UI_cb;
+  gtk_configuration.eventHooks.finiHook = idle_finalize_UI_cb;
+  Common_UI_GTK_Manager_t* gtk_manager_p =
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ();
+  ACE_ASSERT (gtk_manager_p);
+  gtk_manager_p->initialize (gtk_configuration);
+  Common_UI_GTK_State_t& state_r =
+    const_cast < Common_UI_GTK_State_t&> (gtk_manager_p->getR ());
+  state_r.builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN)] =
+    std::make_pair (UI_file, static_cast<GtkBuilder*> (NULL));
+  user_data.GTKState = &state_r;
 
   ACE_High_Res_Timer timer;
   timer.start ();
@@ -617,6 +670,7 @@ test_u_main::run_i (int argc_in,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));
 
+  Common_Log_Tools::finalizeLogging ();
   // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)

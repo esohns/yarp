@@ -1113,7 +1113,7 @@ do_work (const std::string& schemaRepository_in,
   RPG_Engine_Common_Tools::initialize (schema_directories_a,
                                        magicDictionaryFilename_in,
                                        itemDictionaryFilename_in,
-                                       std::string ());
+                                       ACE_TEXT_ALWAYS_CHAR (""));
   if (!RPG_Graphics_Common_Tools::initialize (graphicsDirectory_in,
                                               graphicsCacheSize_in,
                                               false)) // DON'T init SDL bits...

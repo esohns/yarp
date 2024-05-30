@@ -60,6 +60,7 @@ class RPG_Map_Level
   inline struct RPG_Map_FloorPlan getFloorPlan () const { return myMap.plan; }
   inline RPG_Map_Size_t getSize () const { return std::make_pair (myMap.plan.size_x, myMap.plan.size_y); }
   enum RPG_Map_DoorState state (const RPG_Map_Position_t&) const;
+  inline struct RPG_Map getMap () const { return myMap; }
 
   // either floor or an open/broken (!) door ?
   bool isValid (const RPG_Map_Position_t&) const;

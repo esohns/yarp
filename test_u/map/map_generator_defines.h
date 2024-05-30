@@ -40,7 +40,15 @@
 #define MAP_GENERATOR_DEF_ROOM_SIZE_MAX         30
 #define MAP_GENERATOR_DEF_NUM_AREAS_MAX         50
 
+#if defined (GTK_USE)
+#if defined (GTK2_USE)
+#define MAP_GENERATOR_GUI_GNOME_UI_FILE         "map_generator_gui.gtk2"
+#elif defined (GTK3_USE)
+#define MAP_GENERATOR_GUI_GNOME_UI_FILE         "map_generator_gui.gtk3"
+#else
 #define MAP_GENERATOR_GUI_GNOME_UI_FILE         "map_generator_gui.glade"
+#endif // GTK2_USE || GTK3_USE
 #define MAP_GENERATOR_GUI_GNOME_APPLICATION_ID  "map generator"
+#endif // GTK_USE
 
 #endif

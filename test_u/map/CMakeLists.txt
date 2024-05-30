@@ -154,6 +154,8 @@ set (${EXECUTABLE_3}_SRCS
      map_generator_gui_callbacks.cpp
      map_generator_gui_callbacks.h
      map_generator_gui_common.h
+     test_u_main.cpp
+     test_u_main.h
      stdafx.h)
 
 #set_source_files_properties (${${EXECUTABLE_3}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
@@ -171,6 +173,7 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/gtk)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd)
 
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../client)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../graphics)
 
 add_executable (${EXECUTABLE_3}
@@ -188,8 +191,9 @@ if (UNIX)
  target_link_libraries (${EXECUTABLE_3}
                         ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         xerces-c
+                        ${GTK_LIBRARIES}
                         ${ACE_LIBRARY}
-                        Common CommonError CommonLog CommonTimer
+                        Common CommonError CommonLog CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
                         RPG_Chance RPG_Dice RPG_Common
@@ -203,15 +207,18 @@ elseif (WIN32)
 # set_target_properties (${EXECUTABLE_3} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE_3}
+                        Opengl32.lib
                         ${XERCESC_LIBRARIES}
+                        ${GTK_LIBRARIES}
                         ${ACE_LIBRARY}
-                        Common CommonError CommonLog CommonTimer
+                        Common CommonError CommonLog CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
                         RPG_Chance RPG_Dice RPG_Common
                         RPG_Character RPG_Magic RPG_Item
                         RPG_Player RPG_Monster RPG_Combat
-                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
+                        RPG_Map RPG_Engine
+                        RPG_Net RPG_Net_Protocol RPG_Graphics RPG_Sound RPG_Client)
 endif ()
 
 set_property (TARGET ${EXECUTABLE_3} PROPERTY FOLDER "test_u")
@@ -267,6 +274,7 @@ install (TARGETS ${EXECUTABLE_4}
 ########### launcher ###############
 file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
 file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
+file (TO_CMAKE_PATH "${GTK_LIB_DIRS}" GTK_LIB_PATH)
 if (UNIX)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
 elseif (WIN32)
@@ -284,6 +292,7 @@ create_target_launcher (${EXECUTABLE}
                                              ${SDL_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)
+
 if (UNIX)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}" COMMAND)
 elseif (WIN32)
@@ -301,6 +310,7 @@ create_target_launcher (${EXECUTABLE_2}
                                              ${SDL_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)
+
 if (UNIX)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_3}" COMMAND)
 elseif (WIN32)
@@ -309,15 +319,17 @@ elseif (WIN32)
 endif ()
 create_target_launcher (${EXECUTABLE_3}
                         COMMAND ${COMMAND}
-                        ARGS "-l -p -t"
+                        ARGS "-l -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                              ${LIB_ROOT}/libpng/build/Debug
                                              ${XERCESC_LIB_DIR}
-                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${SDL_LIB_PATH}
+                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                             ${GTK_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)
+
 if (UNIX)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_4}" COMMAND)
 elseif (WIN32)

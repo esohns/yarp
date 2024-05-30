@@ -63,7 +63,7 @@
 
 struct GTK_CBData
 {
-  RPG_Engine_Level*                      currentLevel;
+  struct RPG_Engine_LevelData            currentLevel;
   bool                                   isTransient;
   Common_UI_GTK_State_t*                 GTKState;
   struct RPG_Map_FloorPlan_Configuration mapConfiguration;
