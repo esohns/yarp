@@ -74,6 +74,19 @@ reset_layout (struct GTK_CBData& userData_in)
     userData_in.GTKState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   ACE_ASSERT (iterator != userData_in.GTKState->builders.end ());
 
+  GtkToggleButton* togglebutton =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_DOORS_CHECKBUTTON_NAME)));
+  ACE_ASSERT (togglebutton);
+  gtk_toggle_button_set_active (togglebutton,
+                                RPG_CLIENT_MAP_DEF_DOORS);
+  togglebutton =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_CORRIDORS_CHECKBUTTON_NAME)));
+  ACE_ASSERT (togglebutton);
+  gtk_toggle_button_set_active (togglebutton,
+                                RPG_CLIENT_MAP_DEF_CORRIDORS);
+
   GtkSpinButton* spinbutton =
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_SIZEX_SPINBUTTON_NAME)));
@@ -86,6 +99,41 @@ reset_layout (struct GTK_CBData& userData_in)
   ACE_ASSERT (spinbutton);
   gtk_spin_button_set_value (spinbutton,
                              RPG_MAP_DEF_SIZE_MIN);
+
+  spinbutton =
+    GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                             ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_MAXNUMDOORSROOM_SPINBUTTON_NAME)));
+  ACE_ASSERT (spinbutton);
+  gtk_spin_button_set_value (spinbutton,
+                             RPG_CLIENT_MAP_DEF_MAX_NUM_DOORS_PER_ROOM);
+
+  togglebutton =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_MAXIMIZEROOMS_CHECKBUTTON_NAME)));
+  ACE_ASSERT (togglebutton);
+  gtk_toggle_button_set_active (togglebutton,
+                                RPG_CLIENT_MAP_DEF_MAXIMIZE_ROOMS);
+
+  spinbutton =
+    GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                             ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_MINROOMSIZE_SPINBUTTON_NAME)));
+  ACE_ASSERT (spinbutton);
+  gtk_spin_button_set_value (spinbutton,
+                             RPG_CLIENT_MAP_DEF_MIN_ROOM_SIZE);
+
+  spinbutton =
+    GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                             ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_NUMAREAS_SPINBUTTON_NAME)));
+  ACE_ASSERT (spinbutton);
+  gtk_spin_button_set_value (spinbutton,
+                             RPG_CLIENT_MAP_DEF_NUM_AREAS);
+
+  togglebutton =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_SQUAREROOMS_CHECKBUTTON_NAME)));
+  ACE_ASSERT (togglebutton);
+  gtk_toggle_button_set_active (togglebutton,
+                                RPG_CLIENT_MAP_DEF_SQUARE_ROOMS);
 
   GtkComboBox* combobox =
     GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
@@ -117,7 +165,7 @@ reset_layout (struct GTK_CBData& userData_in)
   ACE_ASSERT (combobox);
   gtk_combo_box_set_active (combobox, -1);
 
-  GtkToggleButton* togglebutton =
+  togglebutton =
     GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                                ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_ENVIRONMENT_OUTDOORS_CHECKBUTTON_NAME)));
   ACE_ASSERT (togglebutton);
@@ -144,7 +192,7 @@ reset_layout (struct GTK_CBData& userData_in)
                                              ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_ENCOUNTERS_SPAWNPROBABILITY_SPINBUTTON_NAME)));
   ACE_ASSERT (spinbutton);
   gtk_spin_button_set_value (spinbutton,
-                             RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY);
+                             RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY * 100.0f);
 
   spinbutton =
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
@@ -158,7 +206,7 @@ reset_layout (struct GTK_CBData& userData_in)
                                              ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_ENCOUNTERS_AMBLEPROBABILITY_SPINBUTTON_NAME)));
   ACE_ASSERT (spinbutton);
   gtk_spin_button_set_value (spinbutton,
-                             RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY);
+                             RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY * 100.0f);
 
   GtkTextView* view =
     GTK_TEXT_VIEW (gtk_builder_get_object ((*iterator).second.second,
@@ -338,21 +386,21 @@ update_configuration (struct GTK_CBData& userData_in)
                                                ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_DOORS_CHECKBUTTON_NAME)));
   ACE_ASSERT (togglebutton);
   gtk_toggle_button_set_active (togglebutton,
-                                userData_in.mapConfiguration.doors);
+                                !userData_in.currentLevel.map.plan.doors.empty ());
 
   GtkSpinButton* spinbutton =
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_SIZEX_SPINBUTTON_NAME)));
   ACE_ASSERT (spinbutton);
   gtk_spin_button_set_value (spinbutton,
-                             userData_in.mapConfiguration.map_size_x);
+                             userData_in.currentLevel.map.plan.size_x);
 
   spinbutton =
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_SIZEY_SPINBUTTON_NAME)));
   ACE_ASSERT (spinbutton);
   gtk_spin_button_set_value (spinbutton,
-                             userData_in.mapConfiguration.map_size_y);
+                             userData_in.currentLevel.map.plan.size_x);
 
   spinbutton =
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
@@ -387,7 +435,7 @@ update_configuration (struct GTK_CBData& userData_in)
                                                ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_SQUAREROOMS_CHECKBUTTON_NAME)));
   ACE_ASSERT (togglebutton);
   gtk_toggle_button_set_active (togglebutton,
-                                userData_in.mapConfiguration.square_rooms);
+                                userData_in.currentLevel.map.plan.rooms_are_square);
 }
 
 #ifdef __cplusplus
@@ -632,6 +680,22 @@ idle_initialize_UI_cb (gpointer userData_in)
   //                              &iterator,
   //                              TRUE);
   g_object_unref (buffer);
+
+  //PangoFontMap* fontmap = pango_cairo_font_map_get_default ();
+  //ACE_ASSERT (fontmap);
+  //PangoFontFamily** families = NULL;
+  //int n_families = 0;
+  //pango_font_map_list_families (fontmap, &families, &n_families);
+  //ACE_ASSERT (families && n_families);
+  //for (int font = 0; font < n_families; font++)
+  //{
+  //  const char* family_name = pango_font_family_get_name (families[font]);
+  //  ACE_DEBUG ((LM_DEBUG,
+  //              ACE_TEXT ("#%d: \"%s\"\n"),
+  //              font + 1, ACE_TEXT (family_name)));
+  //} // end FOR
+  //g_free (families); families = NULL;
+
   PangoFontDescription* font_description =
      pango_font_description_from_string (ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_TEXTVIEW_FONTDESCRIPTION));
   if (!font_description)
@@ -642,30 +706,32 @@ idle_initialize_UI_cb (gpointer userData_in)
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
   // apply font
-  GtkRcStyle* rc_style = gtk_rc_style_new ();
-  if (!rc_style)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
+  //GtkRcStyle* rc_style = gtk_rc_style_new ();
+  //if (!rc_style)
+  //{
+  //  ACE_DEBUG((LM_ERROR,
+  //             ACE_TEXT("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
 
-    // clean up
-    pango_font_description_free (font_description);
+  //  // clean up
+  //  pango_font_description_free (font_description);
 
-    return FALSE; // G_SOURCE_REMOVE
-  } // end IF
-  rc_style->font_desc = font_description;
-  GdkColor base_colour, text_colour;
-  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_TEXTVIEW_BASE),
-                   &base_colour);
-  rc_style->base[GTK_STATE_NORMAL] = base_colour;
-  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_TEXTVIEW_TEXT),
-                   &text_colour);
-  rc_style->text[GTK_STATE_NORMAL] = text_colour;
-  rc_style->color_flags[GTK_STATE_NORMAL] = static_cast<GtkRcFlags>(GTK_RC_BASE |
-                                                                    GTK_RC_TEXT);
-  gtk_widget_modify_style (GTK_WIDGET (view),
-                           rc_style);
-  g_object_unref (G_OBJECT (rc_style));
+  //  return FALSE; // G_SOURCE_REMOVE
+  //} // end IF
+  //rc_style->font_desc = font_description;
+  //GdkColor base_colour, text_colour;
+  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_TEXTVIEW_BASE),
+  //                 &base_colour);
+  //rc_style->base[GTK_STATE_NORMAL] = base_colour;
+  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_TEXTVIEW_TEXT),
+  //                 &text_colour);
+  //rc_style->text[GTK_STATE_NORMAL] = text_colour;
+  //rc_style->color_flags[GTK_STATE_NORMAL] = static_cast<GtkRcFlags> (GTK_RC_BASE |
+  //                                                                   GTK_RC_TEXT);
+  //gtk_widget_modify_style (GTK_WIDGET (view),
+  //                         rc_style);
+  //g_object_unref (G_OBJECT (rc_style));
+  gtk_widget_modify_font (GTK_WIDGET (view), font_description);
+  pango_font_description_free (font_description);
 
   ::reset_layout (*data_p);
 
@@ -969,8 +1035,8 @@ quit_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_UNUSED_ARG (widget_in);
   ACE_UNUSED_ARG (userData_in);
 
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (false,
-                                                      false);
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (false,  // wait for completion ?
+                                                      false); // N/A
 
   return FALSE;
 }
@@ -1024,7 +1090,7 @@ create_map_clicked_GTK_cb (GtkWidget* widget_in,
                                              ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_CONFIGURATION_MAXNUMDOORSROOM_SPINBUTTON_NAME)));
   ACE_ASSERT (spinbutton);
   data_p->mapConfiguration.max_num_doors_per_room =
-    gtk_spin_button_get_value_as_int(spinbutton);
+    gtk_spin_button_get_value_as_int (spinbutton);
 
   togglebutton =
     GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
@@ -1618,7 +1684,7 @@ encounter_selection_changed_GTK_cb (GtkWidget* widget_in,
                                              ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_ENCOUNTERS_SPAWNPROBABILITY_SPINBUTTON_NAME)));
   ACE_ASSERT (spinbutton);
   gtk_spin_button_set_value (spinbutton,
-                             (*iterator_3).spawn.probability);
+                             (*iterator_3).spawn.probability * 100.0f);
   spinbutton =
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_ENCOUNTERS_MAXNUMSPAWNED_SPINBUTTON_NAME)));
@@ -1630,7 +1696,7 @@ encounter_selection_changed_GTK_cb (GtkWidget* widget_in,
                                              ACE_TEXT_ALWAYS_CHAR (MAP_GENERATOR_GNOME_ENCOUNTERS_AMBLEPROBABILITY_SPINBUTTON_NAME)));
   ACE_ASSERT (spinbutton);
   gtk_spin_button_set_value (spinbutton,
-                             (*iterator_3).spawn.amble_probability);
+                             (*iterator_3).spawn.amble_probability * 100.0f);
 
   return FALSE;
 }

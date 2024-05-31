@@ -44,7 +44,7 @@
 #define RPG_MAP_DEF_SIZE_MIN          40
 #define RPG_MAP_DEF_SIZE_MAX          512
 #define RPG_MAP_DEF_MIN_ROOM_SIZE_MAX 30
-#define RPG_MAP_DEF_NUM_AREAS_MAX     50
+#define RPG_MAP_DEF_NUM_AREAS_MAX     25
 
 // GTK
 #define RPG_MAP_GTK_MAP_FILTER_NAME   "maps"

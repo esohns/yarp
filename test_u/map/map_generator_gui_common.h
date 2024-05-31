@@ -27,7 +27,7 @@
 
 #include "rpg_map_common.h"
 
-#include "rpg_engine_level.h"
+#include "rpg_engine_common.h"
 
 // gtk widget names
 #define MAP_GENERATOR_GNOME_CONFIGURATION_DOORS_CHECKBUTTON_NAME          "doors_checkbutton"
@@ -57,7 +57,11 @@
 #define MAP_GENERATOR_GNOME_SCROLLMARK_NAME                               "insert"
 
 // widget style
-#define MAP_GENERATOR_GNOME_TEXTVIEW_FONTDESCRIPTION                      "Monospace 9"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#define MAP_GENERATOR_GNOME_TEXTVIEW_FONTDESCRIPTION                      "Courier New 10"
+#else
+#define MAP_GENERATOR_GNOME_TEXTVIEW_FONTDESCRIPTION                      "Monospace 10"
+#endif // ACE_WIN32 || ACE_WIN64
 #define MAP_GENERATOR_GNOME_TEXTVIEW_BASE                                 "#000000" // black
 #define MAP_GENERATOR_GNOME_TEXTVIEW_TEXT                                 "#FFFFFF" // white
 
