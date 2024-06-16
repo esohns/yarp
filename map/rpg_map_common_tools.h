@@ -106,10 +106,12 @@ class RPG_Map_Common_Tools
   // top-to-bottom, left-to-right.
   // --> (0,0), (1,0), ..., (dimx-1, 0), (0,1), ..., (dimx-1,1), ..., (dimx-1,dimy-1)
   struct position_compare
-   : public std::binary_function<RPG_Map_Position_t,
-                                 RPG_Map_Position_t,
-                                 bool>
+   //: public std::binary_function<RPG_Map_Position_t, RPG_Map_Position_t, bool>
   {
+    typedef bool result_type;
+    typedef RPG_Map_Position_t first_argument_type;
+    typedef RPG_Map_Position_t second_argument_type;
+
     inline bool operator() (const RPG_Map_Position_t& position1,
                             const RPG_Map_Position_t& position2) const
     {

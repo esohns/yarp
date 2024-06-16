@@ -77,10 +77,12 @@ class RPG_Map_Pathfinding_Tools
   // the trail according to positions, then cost
   // --> don't want this for the Open Paths
   struct node_compare
-   : public std::binary_function<RPG_Map_AStar_Node_t,
-                                 RPG_Map_AStar_Node_t,
-                                 bool>
+   //: public std::binary_function<RPG_Map_AStar_Node_t, RPG_Map_AStar_Node_t, bool>
   {
+    typedef bool result_type;
+    typedef RPG_Map_AStar_Node_t first_argument_type;
+    typedef RPG_Map_AStar_Node_t second_argument_type;
+
     inline bool operator() (const RPG_Map_AStar_Node_t& node1,
                             const RPG_Map_AStar_Node_t& node2) const
     {

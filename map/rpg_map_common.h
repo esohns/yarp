@@ -92,8 +92,12 @@ struct RPG_Map_Door
 };
 
 struct door_compare
- : public std::binary_function<struct RPG_Map_Door, struct RPG_Map_Door, bool>
+// : public std::binary_function<struct RPG_Map_Door, struct RPG_Map_Door, bool>
 {
+  typedef bool result_type;
+  typedef struct RPG_Map_Door first_argument_type;
+  typedef struct RPG_Map_Door second_argument_type;
+
   inline bool operator() (const struct RPG_Map_Door& __x,
                           const struct RPG_Map_Door& __y) const
   {
