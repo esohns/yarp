@@ -1004,7 +1004,12 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 #if defined (SDL_USE)
   SDL_WarpMouse ((GTKUserData_in.screen->w / 2),
                  (GTKUserData_in.screen->h / 2));
-#endif // SDL_USE
+#elif defined (SDL2_USE) || defined (SDL3_USE)
+  int w, h;
+  SDL_GetWindowSize (GTKUserData_in.screen, &w, &h);
+  SDL_WarpMouseInWindow (GTKUserData_in.screen,
+                         w / 2, h / 2);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   // step3: run intro ?
   if (!skipIntro_in &&

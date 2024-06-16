@@ -1606,7 +1606,10 @@ do_work (mode_t mode_in,
   // ***** mouse setup *****
 #if defined (SDL_USE)
   SDL_WarpMouse ((surface_p->w / 2), (surface_p->h / 2));
-#endif // SDL_USE || SDL2_USE
+#elif defined (SDL2_USE) || defined (SDL3_USE)
+  SDL_WarpMouseInWindow (state.screen,
+                         surface_p->w / 2, surface_p->h / 2);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   switch (mode_in)
   {
