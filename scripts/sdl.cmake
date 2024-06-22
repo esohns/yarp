@@ -87,6 +87,14 @@ elseif (WIN32)
   find_path (SDL1_INCLUDE_DIRS NAMES SDL.h
              PATHS "$ENV{LIB_ROOT}/SDL"
              PATH_SUFFIXES include)
+
+  set (SDL1_MAIN_LIB "SDLmain")
+  find_library (SDL1_MAIN_LIBRARY
+                NAMES ${SDL1_MAIN_LIB}
+                PATHS "$ENV{LIB_ROOT}/SDL/lib"
+                PATH_SUFFIXES ${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                NO_DEFAULT_PATH)
+  
   set (SDL1_LIB "SDL")
   find_library (SDL1_LIBRARY
                 NAMES ${SDL1_LIB}
@@ -186,7 +194,7 @@ elseif (WIN32)
    set (SDL2_LIB_DIR "$ENV{LIB_ROOT}/SDL2/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}")
   else ()
    message (WARNING "could not find SDL2, continuing")
-  endif (SDL2_INCLUDE_DIR AND SDL2_LIBRARY)
+  endif (SDL2_INCLUDE_DIR AND SDL2_LIBRARY AND SDL2_MAIN_LIBRARY)
 
   find_path (SDL2_TTF_INCLUDE_DIR NAMES SDL_ttf.h
              PATHS "$ENV{LIB_ROOT}/SDL2_ttf"
