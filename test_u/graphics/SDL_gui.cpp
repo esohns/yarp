@@ -2135,15 +2135,15 @@ ACE_TMAIN (int argc_in,
     (log_to_file_b ? Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                        ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])))
                    : ACE_TEXT_ALWAYS_CHAR (""));
-  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
-                                            log_file,                                          // logfile
-                                            false,                                             // log to syslog ?
-                                            false,                                             // trace messages ?
-                                            trace_information,                                 // debug messages ?
-                                            NULL))                                             // logger
+  if (!Common_Log_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
+                                     log_file,                                          // logfile
+                                     false,                                             // log to syslog ?
+                                     false,                                             // trace messages ?
+                                     trace_information,                                 // debug messages ?
+                                     NULL))                                             // logger
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
+                ACE_TEXT ("failed to Common_Log_Tools::initialize(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -2171,7 +2171,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to SDL_Init(): \"%s\", aborting\n"),
                 ACE_TEXT (SDL_GetError ())));
 
-    Common_Log_Tools::finalizeLogging ();
+    Common_Log_Tools::finalize ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -2189,7 +2189,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT (SDL_GetError ())));
 
     SDL_Quit ();
-    Common_Log_Tools::finalizeLogging ();
+    Common_Log_Tools::finalize ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -2252,7 +2252,7 @@ ACE_TMAIN (int argc_in,
   // step4: clean up
   TTF_Quit ();
   SDL_Quit ();
-  Common_Log_Tools::finalizeLogging ();
+  Common_Log_Tools::finalize ();
   // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)

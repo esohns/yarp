@@ -47,8 +47,9 @@ class Net_Server_EventHandler
   // implement Stream_ISessionDataNotify_T
   virtual void start (Stream_SessionId_t,                          // session id
                       const struct RPG_Net_Protocol_SessionData&); // session data
-  virtual void notify (Stream_SessionId_t,                     // session id
-                       const enum Stream_SessionMessageType&); // event (state/status change, ...)
+  virtual void notify (Stream_SessionId_t,                    // session id
+                       const enum Stream_SessionMessageType&, // event (state/status change, ...)
+                       bool = false);                         // expedited ?
   virtual void end (Stream_SessionId_t); // session id
   virtual void notify (Stream_SessionId_t,               // session id
                        const RPG_Net_Protocol_Message&); // (protocol) data

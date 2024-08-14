@@ -108,7 +108,7 @@ class RPG_Net_Protocol_ParserDriver
                                           char*,    // buffer handle
                                           size_t);  // buffer size
   inline virtual void destroy (yyscan_t state_in, struct yy_buffer_state*& buffer_inout) { RPG_Net_Protocol_Scanner__delete_buffer (buffer_inout, state_in); buffer_inout = NULL; }
-  inline virtual bool lex () { ACE_ASSERT (false); ACE_NOTSUP_RETURN (false); ACE_NOTREACHED (return false;) }
+  inline virtual bool lex (yyscan_t state_in) { ACE_ASSERT (false); ACE_NOTSUP_RETURN (false); ACE_NOTREACHED (return false;) }
 };
 
 #endif

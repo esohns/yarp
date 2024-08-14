@@ -89,13 +89,15 @@ Net_Server_EventHandler::start (Stream_SessionId_t sessionId_in,
 
 void
 Net_Server_EventHandler::notify (Stream_SessionId_t sessionId_in,
-                                 const enum Stream_SessionMessageType& notification_in)
+                                 const enum Stream_SessionMessageType& notification_in,
+                                 bool expedited_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_Server_EventHandler::notify"));
 
   // *TODO*
   ACE_UNUSED_ARG (sessionId_in);
   ACE_UNUSED_ARG (notification_in);
+  ACE_UNUSED_ARG (expedited_in);
 }
 
 void

@@ -1546,17 +1546,17 @@ ACE_TMAIN (int argc_in,
   if (log_to_file)
     log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                  ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
-  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
-                                            log_file,                      // logfile
-                                            true,                          // log to syslog ?
-                                            false,                         // trace messages ?
-                                            trace_information,             // debug messages ?
-                                            //(UI_file.empty () ? NULL
-                                            //                  : &logger))) // logger ?
-                                            NULL))
+  if (!Common_Log_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
+                                     log_file,                      // logfile
+                                     true,                          // log to syslog ?
+                                     false,                         // trace messages ?
+                                     trace_information,             // debug messages ?
+                                     //(UI_file.empty () ? NULL
+                                     //                  : &logger))) // logger ?
+                                     NULL))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
+                ACE_TEXT ("failed to Common_Log_Tools::initialize(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -1573,7 +1573,7 @@ ACE_TMAIN (int argc_in,
   {
     do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
-    Common_Log_Tools::finalizeLogging ();
+    Common_Log_Tools::finalize ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -1597,7 +1597,7 @@ ACE_TMAIN (int argc_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_OS_Tools::setResourceLimits(), aborting\n")));
 
-    Common_Log_Tools::finalizeLogging ();
+    Common_Log_Tools::finalize ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -1643,7 +1643,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT (SDL_GetError ())));
 
   // clean up
-  Common_Log_Tools::finalizeLogging ();
+  Common_Log_Tools::finalize ();
   // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)
@@ -1660,7 +1660,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT (TTF_GetError ())));
 
     // clean up
-    Common_Log_Tools::finalizeLogging ();
+    Common_Log_Tools::finalize ();
     SDL_Quit ();
     // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -1729,7 +1729,7 @@ ACE_TMAIN (int argc_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
 
-    Common_Log_Tools::finalizeLogging ();
+    Common_Log_Tools::finalize ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -1781,7 +1781,7 @@ ACE_TMAIN (int argc_in,
              elapsed_rusage.ru_nivcsw));
 #endif // ACE_WIN32 || ACE_WIN64
 
-  Common_Log_Tools::finalizeLogging ();
+  Common_Log_Tools::finalize ();
 // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)

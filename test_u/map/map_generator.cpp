@@ -670,15 +670,15 @@ ACE_TMAIN (int argc_in,
   if (log_to_file)
     log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                  Common_File_Tools::basename (ACE_TEXT_ALWAYS_CHAR (argv_in[0]), true));
-  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
-                                            log_file,                    // logfile
-                                            false,                       // log to syslog ?
-                                            false,                       // trace messages ?
-                                            trace_information,           // debug messages ?
-                                            NULL))                       // logger
+  if (!Common_Log_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
+                                     log_file,                    // logfile
+                                     false,                       // log to syslog ?
+                                     false,                       // trace messages ?
+                                     trace_information,           // debug messages ?
+                                     NULL))                       // logger
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
+                ACE_TEXT ("failed to Common_Log_Tools::initialize(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -724,6 +724,7 @@ ACE_TMAIN (int argc_in,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));
 
+  Common_Log_Tools::finalize ();
   // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)

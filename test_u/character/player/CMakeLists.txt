@@ -124,15 +124,15 @@ if (UNIX)
 elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
- target_link_libraries (${EXECUTABLE_2}
-                        ${XERCESC_LIBRARIES}
-                        ${ACE_LIBRARY}
-                        Common CommonLog CommonTimer
-                        ACEStream ACEStream_Network
-                        ACENetwork
-                        RPG_Dice RPG_Chance RPG_Common RPG_Character RPG_Magic RPG_Item
-                        RPG_Player RPG_Monster RPG_Combat
-                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
+ target_link_libraries (${EXECUTABLE_2} ${XERCESC_LIBRARIES})
+ target_link_libraries (${EXECUTABLE_2} ${ACE_LIBRARY})
+ target_link_libraries (${EXECUTABLE_2} Common CommonLog CommonTimer)
+ target_link_libraries (${EXECUTABLE_2} ACEStream ACEStream_Network)
+ target_link_libraries (${EXECUTABLE_2} ACENetwork)
+ target_link_libraries (${EXECUTABLE_2} RPG_Dice RPG_Chance RPG_Common RPG_Character RPG_Magic RPG_Item)
+ target_link_libraries (${EXECUTABLE_2} RPG_Player RPG_Monster RPG_Combat)
+ target_link_libraries (${EXECUTABLE_2} RPG_Map RPG_Graphics)
+ target_link_libraries (${EXECUTABLE_2} RPG_Net RPG_Net_Protocol RPG_Engine)
 endif ()
 
 set_property (TARGET ${EXECUTABLE_2} PROPERTY FOLDER "test_u")
