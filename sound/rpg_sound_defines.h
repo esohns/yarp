@@ -46,8 +46,13 @@
 #define RPG_SOUND_SDL_AUDIODRIVER_ENV_VAR   "SDL_AUDIO_DRIVER"
 #endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined (SDL_USE)
 #define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "dsound"
 //#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "waveout"
+#elif defined (SDL2_USE) || defined (SDL3_USE)
+#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "directsound"
+// #define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "wasapi"
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
 #define RPG_SOUND_DEF_SDL_AUDIO_DEVICE_NAME ""
 #elif defined (ACE_LINUX)

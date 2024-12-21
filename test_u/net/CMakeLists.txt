@@ -135,25 +135,25 @@ add_executable (${EXECUTABLE_2}
                 ${${EXECUTABLE_2}_SRCS})
 
 if (SDL_SUPPORT)
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         ${SDL_LIBRARIES})
 endif (SDL_SUPPORT)
 if (GTK_SUPPORT)
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         ${GTK_LIBRARIES})
 endif (GTK_SUPPORT)
 if (UNIX)
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         xerces-c)
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         ${ACE_LIBRARY})
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK)
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         ACEStream ACEStream_Miscellaneous ACEStream_Network)
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         ACENetwork ACENetwork_Server)
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         RPG_Chance RPG_Dice RPG_Common
                         RPG_Character RPG_Magic RPG_Item RPG_Player RPG_Monster
                         RPG_Combat RPG_Map RPG_Graphics RPG_Dice RPG_Common RPG_Sound

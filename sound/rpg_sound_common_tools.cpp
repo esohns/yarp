@@ -59,6 +59,19 @@ RPG_Sound_Common_Tools::preInitialize ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Sound_Common_Tools::preInitialize"));
 
+#if defined (_DEBUG)
+#if defined (SDL2_USE) || defined (SDL3_USE)
+  for (int i = 0;
+       i < SDL_GetNumAudioDrivers ();
+       ++i)
+  {
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("%d: found audio driver \"%s\"...\n"),
+                i, ACE_TEXT (SDL_GetAudioDriver (i))));
+  } // end FOR
+#endif // SDL2_USE || SDL3_USE
+#endif // _DEBUG
+
   SDL_bool result =
 #if defined (SDL_USE) || defined (SDL2_USE)
     SDL_SetHint (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_AUDIODRIVER),
