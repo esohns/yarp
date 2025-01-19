@@ -126,13 +126,10 @@ add_dependencies (${LIBRARY} RPG_Common RPG_Dice)
 
 #set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
-if (UNIX)
+if (LIBPNG_SUPPORT)
  target_link_libraries (${LIBRARY}
                         ${PNG_LIBRARIES})
-elseif (WIN32)
- target_link_libraries (${LIBRARY}
-                        $ENV{LIB_ROOT}/libpng/build/Debug/libpng16d.lib)
-endif ()
+endif (LIBPNG_SUPPORT)
 if (SDL_SUPPORT)
  target_link_libraries (${LIBRARY}
                         ${SDL_LIBRARIES})

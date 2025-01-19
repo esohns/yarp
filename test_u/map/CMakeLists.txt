@@ -33,16 +33,15 @@ set (${EXECUTABLE}_SRCS
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
-add_dependencies (${EXECUTABLE} RPG_Dice RPG_Chance RPG_Common RPG_Character RPG_Magic RPG_Item
-                                RPG_Combat RPG_Player RPG_Monster RPG_Map RPG_Engine)
+add_dependencies (${EXECUTABLE} RPG_Chance RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item RPG_Map)
 
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         xerces-c
                         ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
-                        ACEStream ACEStream_Network
-                        ACENetwork
+#                        ACEStream ACEStream_Network
+#                        ACENetwork
                         RPG_Dice RPG_Chance RPG_Common
                         RPG_Character RPG_Magic RPG_Item
                         RPG_Player RPG_Monster RPG_Combat
@@ -57,12 +56,13 @@ elseif (WIN32)
                         ${XERCESC_LIBRARIES}
                         ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
-                        ACEStream ACEStream_Network
-                        ACENetwork
+ #                       ACEStream ACEStream_Network
+ #                       ACENetwork
                         RPG_Dice RPG_Chance RPG_Common
                         RPG_Character RPG_Magic RPG_Item
                         RPG_Player RPG_Monster RPG_Combat
-                        RPG_Map RPG_Net RPG_Net_Protocol RPG_Engine)
+                        RPG_Map
+                        RPG_Engine)
 endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
@@ -100,8 +100,8 @@ add_executable (${EXECUTABLE_2}
                 ${${EXECUTABLE_2}_SRCS})
 
 add_dependencies (${EXECUTABLE_2}
-                  RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item
-                  RPG_Monster RPG_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
+                  RPG_Chance RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item
+                  RPG_Map RPG_Engine)
 
 if (SDL_SUPPORT)
  target_link_libraries (${EXECUTABLE_2}
@@ -129,12 +129,10 @@ elseif (WIN32)
                         ${XERCESC_LIBRARIES}
                         ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
-                        ACEStream ACEStream_Network
-                        ACENetwork
                         RPG_Chance RPG_Dice RPG_Common
                         RPG_Character RPG_Magic RPG_Item
-                        RPG_Player RPG_Monster RPG_Combat
-                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
+                        RPG_Player RPG_Combat RPG_Monster
+                        RPG_Map RPG_Graphics RPG_Engine)
 endif ()
 
 set_property (TARGET ${EXECUTABLE_2} PROPERTY FOLDER "test_u")
@@ -180,8 +178,8 @@ add_executable (${EXECUTABLE_3}
                 ${${EXECUTABLE_3}_SRCS})
 
 add_dependencies (${EXECUTABLE_3}
-                  RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item
-                  RPG_Monster RPG_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
+                  RPG_Chance RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item
+                  RPG_Map RPG_Engine)
 
 if (SDL_SUPPORT)
  target_link_libraries (${EXECUTABLE_3}
@@ -212,13 +210,11 @@ elseif (WIN32)
                         ${GTK_LIBRARIES}
                         ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer CommonUI_GTK
-                        ACEStream ACEStream_Network
-                        ACENetwork
                         RPG_Chance RPG_Dice RPG_Common
                         RPG_Character RPG_Magic RPG_Item
-                        RPG_Player RPG_Monster RPG_Combat
+                        RPG_Player RPG_Combat RPG_Monster
                         RPG_Map RPG_Engine
-                        RPG_Net RPG_Net_Protocol RPG_Graphics RPG_Sound RPG_Client)
+                        RPG_Graphics RPG_Sound RPG_Client)
 endif ()
 
 set_property (TARGET ${EXECUTABLE_3} PROPERTY FOLDER "test_u")

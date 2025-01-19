@@ -30,6 +30,7 @@
 #endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Log_Msg.h"
 
+#include "common_macros.h"
 #include "common_file_tools.h"
 
 #include "common_log_tools.h"

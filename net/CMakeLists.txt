@@ -74,8 +74,8 @@ if (WIN32)
  target_link_libraries (${LIBRARY}
                         CommonError)
 endif (WIN32)
-target_link_libraries (${LIBRARY}
-                       ACEStream ACENetwork)
+#target_link_libraries (${LIBRARY}
+#                       ACEStream ACENetwork)
 
 # add PCH
 target_precompile_headers (${LIBRARY}
