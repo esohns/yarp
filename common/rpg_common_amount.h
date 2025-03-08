@@ -6,7 +6,9 @@
 #ifndef RPG_COMMON_AMOUNT_H
 #define RPG_COMMON_AMOUNT_H
 
-struct RPG_Common_Amount
+#include "rpg_common_exports.h"
+
+struct RPG_Common_Export RPG_Common_Amount
 {
   ACE_INT16 value;
   RPG_Dice_Roll range;

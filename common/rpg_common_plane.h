@@ -18,6 +18,8 @@ enum RPG_Common_Plane
   RPG_COMMON_PLANE_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -26,7 +28,7 @@ enum RPG_Common_Plane
 typedef std::map<RPG_Common_Plane, std::string> RPG_Common_PlaneToStringTable_t;
 typedef RPG_Common_PlaneToStringTable_t::const_iterator RPG_Common_PlaneToStringTableIterator_t;
 
-class RPG_Common_PlaneHelper
+class RPG_Common_Export RPG_Common_PlaneHelper
 {
  public:
   inline static void init()

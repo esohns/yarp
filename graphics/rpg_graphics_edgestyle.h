@@ -14,6 +14,8 @@ enum RPG_Graphics_EdgeStyle
   RPG_GRAPHICS_EDGESTYLE_INVALID
 };
 
+#include "rpg_graphics_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -22,7 +24,7 @@ enum RPG_Graphics_EdgeStyle
 typedef std::map<RPG_Graphics_EdgeStyle, std::string> RPG_Graphics_EdgeStyleToStringTable_t;
 typedef RPG_Graphics_EdgeStyleToStringTable_t::const_iterator RPG_Graphics_EdgeStyleToStringTableIterator_t;
 
-class RPG_Graphics_EdgeStyleHelper
+class RPG_Graphics_Export RPG_Graphics_EdgeStyleHelper
 {
  public:
   inline static void init()

@@ -198,9 +198,15 @@ if (UNIX)
                         RPG_Character RPG_Magic RPG_Item
                         RPG_Player RPG_Monster RPG_Combat
                         RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine
-                        RPG_Common RPG_Player RPG_Monster RPG_Map RPG_Graphics
-                        RPG_Dice RPG_Character RPG_Magic RPG_Item
-                        RPG_Common RPG_Combat RPG_Player RPG_Chance)
+                        RPG_Sound RPG_Client
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Player RPG_Monster RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine
+                        RPG_Sound RPG_Client
+                        RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Player)
 elseif (WIN32)
 # set_target_properties (${EXECUTABLE_3} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 

@@ -20,6 +20,8 @@ enum RPG_Common_PhysicalDamageType
   RPG_COMMON_PHYSICALDAMAGETYPE_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -28,7 +30,7 @@ enum RPG_Common_PhysicalDamageType
 typedef std::map<RPG_Common_PhysicalDamageType, std::string> RPG_Common_PhysicalDamageTypeToStringTable_t;
 typedef RPG_Common_PhysicalDamageTypeToStringTable_t::const_iterator RPG_Common_PhysicalDamageTypeToStringTableIterator_t;
 
-class RPG_Common_PhysicalDamageTypeHelper
+class RPG_Common_Export RPG_Common_PhysicalDamageTypeHelper
 {
  public:
   inline static void init()

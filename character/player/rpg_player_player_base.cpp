@@ -696,7 +696,6 @@ RPG_Player_Player_Base::defaultEquip ()
 
   struct RPG_Character_EquipmentSlots slots_s;
   RPG_Item_Base* handle = NULL;
-  RPG_Item_ID_t item_id = 0;
   for (RPG_Item_ListIterator_t iterator = inherited::myInventory.myItems.begin ();
        iterator != inherited::myInventory.myItems.end ();
        iterator++)
@@ -729,11 +728,11 @@ RPG_Player_Player_Base::defaultEquip ()
     {
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor* armor = static_cast<RPG_Item_Armor*> (handle);
+        // RPG_Item_Armor* armor = static_cast<RPG_Item_Armor*> (handle);
 //         RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
 
-        if (myEquipment.isEquipped (slots_s.slots.front (),
-                                    item_id))
+        if (myEquipment.isEquipped (*iterator,
+                                    slots_s.slots.front ()))
           break; // cannot equip...
 
         myEquipment.equip (*iterator,
@@ -749,8 +748,6 @@ RPG_Player_Player_Base::defaultEquip ()
         // - by default, equip light sources only
         if (commodity_type.discriminator != RPG_Item_CommodityUnion::COMMODITYLIGHT)
           break;
-        //if (myEquipment.isEquipped(slot, item_id))
-        //  break; // cannot equip...
 
         myEquipment.equip (*iterator,
                            myOffHand,
@@ -765,8 +762,8 @@ RPG_Player_Player_Base::defaultEquip ()
         // *TODO*: what about other types of weapons ?
         if (!RPG_Item_Common_Tools::isMeleeWeapon (weapon->weaponType_))
           break;
-        if (myEquipment.isEquipped (slots_s.slots.front (),
-                                    item_id))
+        if (myEquipment.isEquipped (*iterator,
+                                    slots_s.slots.front ()))
           break; // cannot equip...
 
         myEquipment.equip (*iterator,

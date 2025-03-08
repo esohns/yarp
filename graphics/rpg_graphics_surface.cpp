@@ -280,10 +280,10 @@ RPG_Graphics_Surface::load (const std::string& filename_in,
                 ACE_TEXT (filename_in.c_str ())));
 
     // clean up
-  if (ACE_OS::fclose (file_ptr))
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
-                ACE_TEXT (filename_in.c_str ())));
+    if (ACE_OS::fclose (file_ptr))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+                  ACE_TEXT (filename_in.c_str ())));
 
     return NULL;
   } // end IF

@@ -10,7 +10,7 @@
 
 # sanity check(s)
 command -v perl >/dev/null 2>&1 || { echo "Perl is not installed. Aborting." >&2; exit 1; }
-XML2CppCodeEXE=./tools/XML2CppCode/build/gcc/Debug/XML2CppCode
+XML2CppCodeEXE=./tools/build/gcc/Debug/XML2CppCode/XML2CppCode
 command -v ${XML2CppCodeEXE} >/dev/null 2>&1 || { echo "XML2CppCode is not installed. Aborting." >&2; exit 1; }
 command -v xsdcxx >/dev/null 2>&1 || { echo "xsdcxx is not installed. Aborting." >&2; exit 1; }
 

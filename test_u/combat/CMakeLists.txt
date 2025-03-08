@@ -59,7 +59,7 @@ if (UNIX)
                         RPG_Chance RPG_Dice RPG_Common
                         RPG_Character RPG_Magic RPG_Item
                         RPG_Player
-#                        RPG_Map
+                        RPG_Map
                         RPG_Common
                         Common)
 elseif (WIN32)

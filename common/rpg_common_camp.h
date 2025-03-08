@@ -15,6 +15,8 @@ enum RPG_Common_Camp
   RPG_COMMON_CAMP_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -23,7 +25,7 @@ enum RPG_Common_Camp
 typedef std::map<RPG_Common_Camp, std::string> RPG_Common_CampToStringTable_t;
 typedef RPG_Common_CampToStringTable_t::const_iterator RPG_Common_CampToStringTableIterator_t;
 
-class RPG_Common_CampHelper
+class RPG_Common_Export RPG_Common_CampHelper
 {
  public:
   inline static void init()

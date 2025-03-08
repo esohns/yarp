@@ -23,6 +23,8 @@ enum RPG_Common_SubClass
   RPG_COMMON_SUBCLASS_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -31,7 +33,7 @@ enum RPG_Common_SubClass
 typedef std::map<RPG_Common_SubClass, std::string> RPG_Common_SubClassToStringTable_t;
 typedef RPG_Common_SubClassToStringTable_t::const_iterator RPG_Common_SubClassToStringTableIterator_t;
 
-class RPG_Common_SubClassHelper
+class RPG_Common_Export RPG_Common_SubClassHelper
 {
  public:
   inline static void init()

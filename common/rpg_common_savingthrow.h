@@ -18,6 +18,8 @@ enum RPG_Common_SavingThrow
   RPG_COMMON_SAVINGTHROW_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -26,7 +28,7 @@ enum RPG_Common_SavingThrow
 typedef std::map<RPG_Common_SavingThrow, std::string> RPG_Common_SavingThrowToStringTable_t;
 typedef RPG_Common_SavingThrowToStringTable_t::const_iterator RPG_Common_SavingThrowToStringTableIterator_t;
 
-class RPG_Common_SavingThrowHelper
+class RPG_Common_Export RPG_Common_SavingThrowHelper
 {
  public:
   inline static void init()

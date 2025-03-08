@@ -6,7 +6,9 @@
 #ifndef RPG_GRAPHICS_ELEMENTTYPEUNION_H
 #define RPG_GRAPHICS_ELEMENTTYPEUNION_H
 
-struct RPG_Graphics_ElementTypeUnion
+#include "rpg_graphics_exports.h"
+
+struct RPG_Graphics_Export RPG_Graphics_ElementTypeUnion
 {
   union
   {

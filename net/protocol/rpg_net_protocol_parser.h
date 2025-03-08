@@ -856,7 +856,7 @@ namespace yy {
     yyscan_t yyscanner;
 
    public:
-    inline void set (yyscan_t context_in) { yyscanner = context_in; }
+    void set (yyscan_t state_in) { yyscanner = state_in; }
   };
 
 

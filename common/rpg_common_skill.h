@@ -69,6 +69,8 @@ enum RPG_Common_Skill
   RPG_COMMON_SKILL_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -77,7 +79,7 @@ enum RPG_Common_Skill
 typedef std::map<RPG_Common_Skill, std::string> RPG_Common_SkillToStringTable_t;
 typedef RPG_Common_SkillToStringTable_t::const_iterator RPG_Common_SkillToStringTableIterator_t;
 
-class RPG_Common_SkillHelper
+class RPG_Common_Export RPG_Common_SkillHelper
 {
  public:
   inline static void init()

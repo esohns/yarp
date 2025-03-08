@@ -189,10 +189,10 @@ RPG_Graphics_Texture::load (SDL_Renderer* renderer_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_Texture::loadPNG(\"%s\"), aborting\n"),
                 ACE_TEXT (filename_in.c_str ())));
-  if (ACE_OS::fclose (file_ptr))
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
-                ACE_TEXT (filename_in.c_str ())));
+    if (ACE_OS::fclose (file_ptr))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+                  ACE_TEXT (filename_in.c_str ())));
     return NULL;
   } // end IF
 

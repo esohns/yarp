@@ -31,6 +31,155 @@ echo "generating .so exports headers...DONE"
 
 # ..........................................
 
+echo "generating XSD schema links..."
+pushd . >/dev/null
+cd ${PROJECT_DIR}/character/etc
+rm -f rpg_common.xsd
+ln -s ../../common/etc/rpg_common.xsd
+rm -f rpg_dice.xsd
+ln -s ../../chance/dice/etc/rpg_dice.xsd
+popd >/dev/null
+
+pushd . >/dev/null
+cd ${PROJECT_DIR}/character/player/etc
+rm -f rpg_character.xsd
+ln -s ../../etc/rpg_character.xsd
+rm -f rpg_common_environment.xsd
+ln -s ../../../common/etc/rpg_common_environment.xsd
+rm -f rpg_common.xsd
+ln -s ../../../common/etc/rpg_common.xsd
+rm -f rpg_dice.xsd
+ln -s ../../../chance/dice/etc/rpg_dice.xsd
+rm -f rpg_item.xsd
+ln -s ../../../item/etc/rpg_item.xsd
+rm -f rpg_magic.xsd
+ln -s ../../../magic/etc/rpg_magic.xsd
+popd >/dev/null
+
+pushd . >/dev/null
+cd ${PROJECT_DIR}/character/monster/etc
+rm -f rpg_character.xsd
+ln -s ../../etc/rpg_character.xsd
+rm -f rpg_combat.xsd
+ln -s ../../../combat/etc/rpg_combat.xsd
+rm -f rpg_common_environment.xsd
+ln -s ../../../common/etc/rpg_common_environment.xsd
+rm -f rpg_common.xsd
+ln -s ../../../common/etc/rpg_common.xsd
+rm -f rpg_dice.xsd
+ln -s ../../../chance/dice/etc/rpg_dice.xsd
+rm -f rpg_item.xsd
+ln -s ../../../item/etc/rpg_item.xsd
+rm -f rpg_magic.xsd
+ln -s ../../../magic/etc/rpg_magic.xsd
+rm -f rpg_player.xsd
+ln -s ../../player/etc/rpg_player.xsd
+popd >/dev/null
+
+pushd . >/dev/null
+cd ${PROJECT_DIR}/combat/etc
+rm -f rpg_character.xsd
+ln -s ../../character/etc/rpg_character.xsd
+rm -f rpg_common_environment.xsd
+ln -s ../../common/etc/rpg_common_environment.xsd
+rm -f rpg_common.xsd
+ln -s ../../common/etc/rpg_common.xsd
+rm -f rpg_dice.xsd
+ln -s ../../chance/dice/etc/rpg_dice.xsd
+rm -f rpg_magic.xsd
+ln -s ../../magic/etc/rpg_magic.xsd
+popd >/dev/null
+
+pushd . >/dev/null
+cd ${PROJECT_DIR}/common/etc
+rm -f rpg_dice.xsd
+ln -s ../../chance/dice/etc/rpg_dice.xsd
+popd >/dev/null
+
+pushd . >/dev/null
+cd ${PROJECT_DIR}/engine/etc
+rm -f rpg_character.xsd
+ln -s ../../character/etc/rpg_character.xsd
+rm -f rpg_combat.xsd
+ln -s ../../combat/etc/rpg_combat.xsd
+rm -f rpg_common_environment.xsd
+ln -s ../../common/etc/rpg_common_environment.xsd
+rm -f rpg_common.xsd
+ln -s ../../common/etc/rpg_common.xsd
+rm -f rpg_dice.xsd
+ln -s ../../chance/dice/etc/rpg_dice.xsd
+rm -f rpg_item.xsd
+ln -s ../../item/etc/rpg_item.xsd
+rm -f rpg_magic.xsd
+ln -s ../../magic/etc/rpg_magic.xsd
+rm -f rpg_map.xsd
+ln -s ../../map/etc/rpg_map.xsd
+rm -f rpg_monster.xsd
+ln -s ../../character/monster/etc/rpg_monster.xsd
+rm -f rpg_player.xsd
+ln -s ../../character/player/etc/rpg_player.xsd
+popd >/dev/null
+
+pushd . >/dev/null
+cd ${PROJECT_DIR}/item/etc
+rm -f rpg_character.xsd
+ln -s ../../character/etc/rpg_character.xsd
+rm -f rpg_common_environment.xsd
+ln -s ../../common/etc/rpg_common_environment.xsd
+rm -f rpg_common.xsd
+ln -s ../../common/etc/rpg_common.xsd
+rm -f rpg_dice.xsd
+ln -s ../../chance/dice/etc/rpg_dice.xsd
+rm -f rpg_magic.xsd
+ln -s ../../magic/etc/rpg_magic.xsd
+popd >/dev/null
+
+pushd . >/dev/null
+cd ${PROJECT_DIR}/magic/etc
+rm -f rpg_character.xsd
+ln -s ../../character/etc/rpg_character.xsd
+rm -f rpg_common_environment.xsd
+ln -s ../../common/etc/rpg_common_environment.xsd
+rm -f rpg_common.xsd
+ln -s ../../common/etc/rpg_common.xsd
+rm -f rpg_dice.xsd
+ln -s ../../chance/dice/etc/rpg_dice.xsd
+popd >/dev/null
+
+pushd . >/dev/null
+cd ${PROJECT_DIR}/map/etc
+rm -f rpg_common_environment.xsd
+ln -s ../../common/etc/rpg_common_environment.xsd
+popd >/dev/null
+
+pushd . >/dev/null
+cd ${PROJECT_DIR}/client/etc
+rm -f rpg_character.xsd
+ln -s ../../character/etc/rpg_character.xsd
+rm -f rpg_combat.xsd
+ln -s ../../combat/etc/rpg_combat.xsd
+rm -f rpg_common_environment.xsd
+ln -s ../../common/etc/rpg_common_environment.xsd
+rm -f rpg_common.xsd
+ln -s ../../common/etc/rpg_common.xsd
+rm -f rpg_dice.xsd
+ln -s ../../chance/dice/etc/rpg_dice.xsd
+rm -f rpg_engine.xsd
+ln -s ../../engine/etc/rpg_engine.xsd
+rm -f rpg_graphics.xsd
+ln -s ../../graphics/etc/rpg_graphics.xsd
+rm -f rpg_item.xsd
+ln -s ../../item/etc/rpg_item.xsd
+rm -f rpg_magic.xsd
+ln -s ../../magic/etc/rpg_magic.xsd
+rm -f rpg_map.xsd
+ln -s ../../map/etc/rpg_map.xsd
+rm -f rpg_monster.xsd
+ln -s ../../character/monster/etc/rpg_monster.xsd
+rm -f rpg_player.xsd
+ln -s ../../character/player/etc/rpg_player.xsd
+popd >/dev/null
+
 echo "generating XML data bindings..."
 ${PROJECT_DIR}/chance/dice/scripts/bindings.sh
 ${PROJECT_DIR}/character/scripts/bindings.sh

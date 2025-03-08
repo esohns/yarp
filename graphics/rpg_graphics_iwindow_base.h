@@ -28,13 +28,14 @@
 #include "common_ilock.h"
 
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_windowtype.h"
 
 class RPG_Graphics_IWindowBase
 {
  public:
-  virtual void initialize (Common_ILock* = NULL, // screen lock interface handle
-                           bool = false) = 0;    // double-buffered screen ?
+  virtual void initialize (Common_ILock* = NULL,              // screen lock interface handle
+                           bool = RPG_GRAPHICS_DEF_FLIP) = 0; // flip ? : update dirty region(s)
 
   virtual void clip (SDL_Surface* = NULL,   // target surface (default: screen)
                      unsigned int = 0,      // offset x (top-left = [0,0])

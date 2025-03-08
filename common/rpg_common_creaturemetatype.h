@@ -29,6 +29,8 @@ enum RPG_Common_CreatureMetaType
   RPG_COMMON_CREATUREMETATYPE_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -37,7 +39,7 @@ enum RPG_Common_CreatureMetaType
 typedef std::map<RPG_Common_CreatureMetaType, std::string> RPG_Common_CreatureMetaTypeToStringTable_t;
 typedef RPG_Common_CreatureMetaTypeToStringTable_t::const_iterator RPG_Common_CreatureMetaTypeToStringTableIterator_t;
 
-class RPG_Common_CreatureMetaTypeHelper
+class RPG_Common_Export RPG_Common_CreatureMetaTypeHelper
 {
  public:
   inline static void init()

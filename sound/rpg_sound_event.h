@@ -26,6 +26,8 @@ enum RPG_Sound_Event
   RPG_SOUND_EVENT_INVALID
 };
 
+#include "rpg_sound_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -34,7 +36,7 @@ enum RPG_Sound_Event
 typedef std::map<RPG_Sound_Event, std::string> RPG_Sound_EventToStringTable_t;
 typedef RPG_Sound_EventToStringTable_t::const_iterator RPG_Sound_EventToStringTableIterator_t;
 
-class RPG_Sound_EventHelper
+class RPG_Sound_Export RPG_Sound_EventHelper
 {
  public:
   inline static void init()
