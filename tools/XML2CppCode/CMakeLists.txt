@@ -49,8 +49,10 @@ include (../../../Common/scripts/ACE.cmake)
 
 if (UNIX)
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/xerces-c/build/msvc/src)
- include_directories ($ENV{LIB_ROOT}/xerces-c/src)
+ add_compile_definitions (LIBXERCES_C_SHARED)
+ include_directories ($ENV{LIB_ROOT}/xerces-c/include)
+# include_directories ($ENV{LIB_ROOT}/xerces-c/build/msvc/src)
+# include_directories ($ENV{LIB_ROOT}/xerces-c/src)
 endif ()
 
 if (UNIX)
@@ -75,7 +77,8 @@ if (UNIX)
 elseif (WIN32)
  target_link_libraries (XML2CppCode
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib)
+                        $ENV{LIB_ROOT}/xerces-c/lib/Debug/xerces-c.dll.lib)
+#                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib)
 endif ()
 
 # add PCH

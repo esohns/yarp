@@ -557,8 +557,9 @@ XML_Handler::startElement(const XMLCh* const uri_in,
         std::transform(FQfilename.begin(),
                        FQfilename.end(),
                        FQfilename.begin(),
-                       std::bind2nd(std::ptr_fun(&std::tolower<char>),
-                                    std::locale("")));
+                       std::bind (std::tolower<char>,
+                                  std::placeholders::_1,
+                                  std::locale ("")));
 
         // try to open file
         try
@@ -1086,8 +1087,9 @@ XML_Handler::insertMultipleIncludeProtection (bool usePragmaOnce_in,
   std::transform (definition.begin (),
                   definition.end (),
                   definition.begin (),
-                  std::bind2nd (std::ptr_fun (&std::toupper<char>),
-                                std::locale("")));
+                  std::bind (std::tolower<char>,
+                             std::placeholders::_1,
+                             std::locale ("")));
 
   targetStream_inout << ACE_TEXT_ALWAYS_CHAR ("#ifndef ");
   targetStream_inout << definition << std::endl;

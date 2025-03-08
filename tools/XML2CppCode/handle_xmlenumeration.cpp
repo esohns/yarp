@@ -91,8 +91,9 @@ void Handle_XMLEnumeration::endElement ()
   std::transform (final_element.begin (),
                   final_element.end (),
                   final_element.begin (),
-                  std::bind2nd (std::ptr_fun (&std::toupper<char>),
-                                std::locale ("")));
+                  std::bind (std::tolower<char>,
+                             std::placeholders::_1,
+                             std::locale ("")));
 
   myOutputFile << std::setw (XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR (" ");
   myOutputFile << ACE_TEXT_ALWAYS_CHAR ("//") << std::endl;
@@ -121,8 +122,7 @@ Handle_XMLEnumeration::emitStringConversionTable ()
     std::transform (exports_filename.begin (),
                     exports_filename.end (),
                     exports_filename.begin (),
-                    std::bind2nd (std::ptr_fun (&std::tolower<char>),
-                                  std::locale ("")));
+                    std::bind (std::tolower<char>, std::placeholders::_1, std::locale ("")));
 
     myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
     myOutputFile << exports_filename.c_str();
@@ -154,8 +154,7 @@ Handle_XMLEnumeration::emitStringConversionTable ()
   std::transform(invalid_element.begin(),
                  invalid_element.end(),
                  invalid_element.begin(),
-                 std::bind2nd(std::ptr_fun(&std::toupper<char>),
-                              std::locale("")));
+                 std::bind (std::tolower<char>, std::placeholders::_1, std::locale ("")));
   invalid_element += ACE_TEXT_ALWAYS_CHAR("_INVALID");
   myOutputFile << ACE_TEXT_ALWAYS_CHAR("class ");
   if (!myEmitClassQualifier.empty())

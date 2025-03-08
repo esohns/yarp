@@ -67,8 +67,7 @@ Handle_XMLUnion::startElement(const std::string& union_in)
     std::transform (exports_filename.begin (),
                     exports_filename.end (),
                     exports_filename.begin (),
-                    std::bind2nd (std::ptr_fun (&std::tolower<char>),
-                                  std::locale("")));
+                    std::bind (std::tolower<char>, std::placeholders::_1, std::locale ("")));
 
     myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
     myOutputFile << exports_filename.c_str();
@@ -223,8 +222,7 @@ Handle_XMLUnion::handleData(const std::string& memberTypes_in)
     std::transform (current_identifier.begin (),
                     current_identifier.end (),
                     current_identifier.begin (),
-                    std::bind2nd (std::ptr_fun (&std::tolower<char>),
-                                  std::locale ("")));
+                    std::bind (std::tolower<char>, std::placeholders::_1, std::locale ("")));
 
     // OK: emit the line of code
     myOutputFile << std::setw (XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR (" ");
@@ -307,8 +305,7 @@ Handle_XMLUnion::endElement()
       std::transform(current_identifier.begin(),
                      current_identifier.end(),
                      current_identifier.begin(),
-                     std::bind2nd(std::ptr_fun(&std::toupper<char>),
-                                  std::locale("")));
+                     std::bind (std::tolower<char>, std::placeholders::_1, std::locale ("")));
 
       // *PORTABILITY*: "DOMAIN" seems to be a constant (see math.h)
       // --> provide a (temporary) workaround here...
