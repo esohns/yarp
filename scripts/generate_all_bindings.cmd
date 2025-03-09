@@ -73,6 +73,89 @@ mklink "%Yarp_dir%\character\monster\etc\rpg_combat.xsd" "%Yarp_dir%\combat\etc\
 del /F %Yarp_dir%\character\monster\etc\rpg_player.xsd
 mklink "%Yarp_dir%\character\monster\etc\rpg_player.xsd" "%Yarp_dir%\character\player\etc\rpg_player.xsd"
 
+del /F %Yarp_dir%\combat\etc\rpg_dice.xsd
+mklink "%Yarp_dir%\combat\etc\rpg_dice.xsd" "%Yarp_dir%\chance\dice\etc\rpg_dice.xsd"
+del /F %Yarp_dir%\combat\etc\rpg_common.xsd
+mklink "%Yarp_dir%\combat\etc\rpg_common.xsd" "%Yarp_dir%\common\etc\rpg_common.xsd"
+del /F %Yarp_dir%\combat\etc\rpg_magic.xsd
+mklink "%Yarp_dir%\combat\etc\rpg_magic.xsd" "%Yarp_dir%\magic\etc\rpg_magic.xsd"
+del /F %Yarp_dir%\combat\etc\rpg_common_environment.xsd
+mklink "%Yarp_dir%\combat\etc\rpg_common_environment.xsd" "%Yarp_dir%\common\etc\rpg_common_environment.xsd"
+del /F %Yarp_dir%\combat\etc\rpg_character.xsd
+mklink "%Yarp_dir%\combat\etc\rpg_character.xsd" "%Yarp_dir%\character\etc\rpg_character.xsd"
+
+del /F %Yarp_dir%\common\etc\rpg_dice.xsd
+mklink "%Yarp_dir%\common\etc\rpg_dice.xsd" "%Yarp_dir%\chance\dice\etc\rpg_dice.xsd"
+
+del /F %Yarp_dir%\engine\etc\rpg_dice.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_dice.xsd" "%Yarp_dir%\chance\dice\etc\rpg_dice.xsd"
+del /F %Yarp_dir%\engine\etc\rpg_common.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_common.xsd" "%Yarp_dir%\common\etc\rpg_common.xsd"
+del /F %Yarp_dir%\engine\etc\rpg_magic.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_magic.xsd" "%Yarp_dir%\magic\etc\rpg_magic.xsd"
+del /F %Yarp_dir%\engine\etc\rpg_common_environment.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_common_environment.xsd" "%Yarp_dir%\common\etc\rpg_common_environment.xsd"
+del /F %Yarp_dir%\engine\etc\rpg_character.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_character.xsd" "%Yarp_dir%\character\etc\rpg_character.xsd"
+del /F %Yarp_dir%\engine\etc\rpg_item.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_item.xsd" "%Yarp_dir%\item\etc\rpg_item.xsd"
+del /F %Yarp_dir%\engine\etc\rpg_combat.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_combat.xsd" "%Yarp_dir%\combat\etc\rpg_combat.xsd"
+del /F %Yarp_dir%\engine\etc\rpg_player.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_player.xsd" "%Yarp_dir%\character\player\etc\rpg_player.xsd"
+del /F %Yarp_dir%\engine\etc\rpg_monster.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_monster.xsd" "%Yarp_dir%\character\monster\etc\rpg_monster.xsd"
+del /F %Yarp_dir%\engine\etc\rpg_map.xsd
+mklink "%Yarp_dir%\engine\etc\rpg_map.xsd" "%Yarp_dir%\map\etc\rpg_map.xsd"
+
+del /F %Yarp_dir%\item\etc\rpg_dice.xsd
+mklink "%Yarp_dir%\item\etc\rpg_dice.xsd" "%Yarp_dir%\chance\dice\etc\rpg_dice.xsd"
+del /F %Yarp_dir%\item\etc\rpg_common.xsd
+mklink "%Yarp_dir%\item\etc\rpg_common.xsd" "%Yarp_dir%\common\etc\rpg_common.xsd"
+del /F %Yarp_dir%\item\etc\rpg_magic.xsd
+mklink "%Yarp_dir%\item\etc\rpg_magic.xsd" "%Yarp_dir%\magic\etc\rpg_magic.xsd"
+del /F %Yarp_dir%\item\etc\rpg_common_environment.xsd
+mklink "%Yarp_dir%\item\etc\rpg_common_environment.xsd" "%Yarp_dir%\common\etc\rpg_common_environment.xsd"
+del /F %Yarp_dir%\item\etc\rpg_character.xsd
+mklink "%Yarp_dir%\item\etc\rpg_character.xsd" "%Yarp_dir%\character\etc\rpg_character.xsd"
+
+del /F %Yarp_dir%\magic\etc\rpg_dice.xsd
+mklink "%Yarp_dir%\magic\etc\rpg_dice.xsd" "%Yarp_dir%\chance\dice\etc\rpg_dice.xsd"
+del /F %Yarp_dir%\magic\etc\rpg_common.xsd
+mklink "%Yarp_dir%\magic\etc\rpg_common.xsd" "%Yarp_dir%\common\etc\rpg_common.xsd"
+del /F %Yarp_dir%\magic\etc\rpg_common_environment.xsd
+mklink "%Yarp_dir%\magic\etc\rpg_common_environment.xsd" "%Yarp_dir%\common\etc\rpg_common_environment.xsd"
+del /F %Yarp_dir%\magic\etc\rpg_character.xsd
+mklink "%Yarp_dir%\magic\etc\rpg_character.xsd" "%Yarp_dir%\character\etc\rpg_character.xsd"
+
+del /F %Yarp_dir%\map\etc\rpg_common_environment.xsd
+mklink "%Yarp_dir%\map\etc\rpg_common_environment.xsd" "%Yarp_dir%\common\etc\rpg_common_environment.xsd"
+
+del /F %Yarp_dir%\client\etc\rpg_dice.xsd
+mklink "%Yarp_dir%\client\etc\rpg_dice.xsd" "%Yarp_dir%\chance\dice\etc\rpg_dice.xsd"
+del /F %Yarp_dir%\client\etc\rpg_common.xsd
+mklink "%Yarp_dir%\client\etc\rpg_common.xsd" "%Yarp_dir%\common\etc\rpg_common.xsd"
+del /F %Yarp_dir%\client\etc\rpg_magic.xsd
+mklink "%Yarp_dir%\client\etc\rpg_magic.xsd" "%Yarp_dir%\magic\etc\rpg_magic.xsd"
+del /F %Yarp_dir%\client\etc\rpg_common_environment.xsd
+mklink "%Yarp_dir%\client\etc\rpg_common_environment.xsd" "%Yarp_dir%\common\etc\rpg_common_environment.xsd"
+del /F %Yarp_dir%\client\etc\rpg_character.xsd
+mklink "%Yarp_dir%\client\etc\rpg_character.xsd" "%Yarp_dir%\character\etc\rpg_character.xsd"
+del /F %Yarp_dir%\client\etc\rpg_item.xsd
+mklink "%Yarp_dir%\client\etc\rpg_item.xsd" "%Yarp_dir%\item\etc\rpg_item.xsd"
+del /F %Yarp_dir%\client\etc\rpg_combat.xsd
+mklink "%Yarp_dir%\client\etc\rpg_combat.xsd" "%Yarp_dir%\combat\etc\rpg_combat.xsd"
+del /F %Yarp_dir%\client\etc\rpg_player.xsd
+mklink "%Yarp_dir%\client\etc\rpg_player.xsd" "%Yarp_dir%\character\player\etc\rpg_player.xsd"
+del /F %Yarp_dir%\client\etc\rpg_monster.xsd
+mklink "%Yarp_dir%\client\etc\rpg_monster.xsd" "%Yarp_dir%\character\monster\etc\rpg_monster.xsd"
+del /F %Yarp_dir%\client\etc\rpg_map.xsd
+mklink "%Yarp_dir%\client\etc\rpg_map.xsd" "%Yarp_dir%\map\etc\rpg_map.xsd"
+del /F %Yarp_dir%\client\etc\rpg_graphics.xsd
+mklink "%Yarp_dir%\client\etc\rpg_graphics.xsd" "%Yarp_dir%\graphics\etc\rpg_graphics.xsd"
+del /F %Yarp_dir%\client\etc\rpg_engine.xsd
+mklink "%Yarp_dir%\client\etc\rpg_engine.xsd" "%Yarp_dir%\engine\etc\rpg_engine.xsd"
+
 echo generating XML data bindings...
 call %Yarp_dir%\chance\dice\scripts\bindings.bat
 call %Yarp_dir%\character\scripts\bindings.bat

@@ -12,7 +12,7 @@ setlocal enabledelayedexpansion
 pushd . >NUL 2>&1
 
 @rem generate exports file
-set PerlEXE=C:\Perl64\bin\perl.exe
+set PerlEXE=C:\Strawberry\perl\bin\perl.exe
 if NOT exist "%PerlEXE%" (
  echo invalid file ^(was: "%PerlEXE%"^)^, exiting
  goto Failed
@@ -30,7 +30,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 @rem C++ "glue code"
-set XML2CppCodeEXE=%cd%\tools\XML2CppCode\build\msvc\Debug\XML2CppCode.exe
+set XML2CppCodeEXE=%cd%\tools\build\msvc\Debug\XML2CppCode.exe
 if NOT exist "%XML2CppCodeEXE%" (
  echo invalid file ^(was: "%XML2CppCodeEXE%"^)^, exiting
  goto Failed

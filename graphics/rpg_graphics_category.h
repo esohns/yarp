@@ -20,8 +20,6 @@ enum RPG_Graphics_Category
   RPG_GRAPHICS_CATEGORY_INVALID
 };
 
-#include "rpg_graphics_exports.h"
-
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -30,7 +28,7 @@ enum RPG_Graphics_Category
 typedef std::map<RPG_Graphics_Category, std::string> RPG_Graphics_CategoryToStringTable_t;
 typedef RPG_Graphics_CategoryToStringTable_t::const_iterator RPG_Graphics_CategoryToStringTableIterator_t;
 
-class RPG_Graphics_Export RPG_Graphics_CategoryHelper
+class RPG_Graphics_CategoryHelper
 {
  public:
   inline static void init()

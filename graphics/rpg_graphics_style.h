@@ -6,9 +6,7 @@
 #ifndef RPG_GRAPHICS_STYLE_H
 #define RPG_GRAPHICS_STYLE_H
 
-#include "rpg_graphics_exports.h"
-
-struct RPG_Graphics_Export RPG_Graphics_Style
+struct RPG_Graphics_Style
 {
   RPG_Graphics_FloorStyle floor;
   RPG_Graphics_EdgeStyle edge;

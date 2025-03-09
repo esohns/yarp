@@ -6,9 +6,7 @@
 #ifndef RPG_GRAPHICS_COLORRGBA_H
 #define RPG_GRAPHICS_COLORRGBA_H
 
-#include "rpg_graphics_exports.h"
-
-struct RPG_Graphics_Export RPG_Graphics_ColorRGBA
+struct RPG_Graphics_ColorRGBA
 {
   ACE_UINT8 r;
   ACE_UINT8 g;

@@ -305,7 +305,7 @@ Handle_XMLUnion::endElement()
       std::transform(current_identifier.begin(),
                      current_identifier.end(),
                      current_identifier.begin(),
-                     std::bind (std::tolower<char>, std::placeholders::_1, std::locale ("")));
+                     std::bind (std::toupper<char>, std::placeholders::_1, std::locale ("")));
 
       // *PORTABILITY*: "DOMAIN" seems to be a constant (see math.h)
       // --> provide a (temporary) workaround here...

@@ -17,8 +17,6 @@ enum RPG_Graphics_Image
   RPG_GRAPHICS_IMAGE_INVALID
 };
 
-#include "rpg_graphics_exports.h"
-
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -27,7 +25,7 @@ enum RPG_Graphics_Image
 typedef std::map<RPG_Graphics_Image, std::string> RPG_Graphics_ImageToStringTable_t;
 typedef RPG_Graphics_ImageToStringTable_t::const_iterator RPG_Graphics_ImageToStringTableIterator_t;
 
-class RPG_Graphics_Export RPG_Graphics_ImageHelper
+class RPG_Graphics_ImageHelper
 {
  public:
   inline static void init()

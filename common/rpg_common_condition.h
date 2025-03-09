@@ -56,8 +56,6 @@ enum RPG_Common_Condition
   RPG_COMMON_CONDITION_INVALID
 };
 
-#include "rpg_common_exports.h"
-
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -66,7 +64,7 @@ enum RPG_Common_Condition
 typedef std::map<RPG_Common_Condition, std::string> RPG_Common_ConditionToStringTable_t;
 typedef RPG_Common_ConditionToStringTable_t::const_iterator RPG_Common_ConditionToStringTableIterator_t;
 
-class RPG_Common_Export RPG_Common_ConditionHelper
+class RPG_Common_ConditionHelper
 {
  public:
   inline static void init()

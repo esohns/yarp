@@ -21,8 +21,6 @@ enum RPG_Graphics_TileType
   RPG_GRAPHICS_TILETYPE_INVALID
 };
 
-#include "rpg_graphics_exports.h"
-
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -31,7 +29,7 @@ enum RPG_Graphics_TileType
 typedef std::map<RPG_Graphics_TileType, std::string> RPG_Graphics_TileTypeToStringTable_t;
 typedef RPG_Graphics_TileTypeToStringTable_t::const_iterator RPG_Graphics_TileTypeToStringTableIterator_t;
 
-class RPG_Graphics_Export RPG_Graphics_TileTypeHelper
+class RPG_Graphics_TileTypeHelper
 {
  public:
   inline static void init()

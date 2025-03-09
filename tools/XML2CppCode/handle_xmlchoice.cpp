@@ -71,9 +71,7 @@ Handle_XMLChoice::startElement (const std::string& typeName_in)
     std::transform (exports_filename.begin (),
                     exports_filename.end (),
                     exports_filename.begin (),
-                    std::bind (std::tolower<char>,
-                               std::placeholders::_1,
-                               std::locale ("")));
+                    std::bind (std::tolower<char>, std::placeholders::_1, std::locale ("")));
 
     myOutputFile << ACE_TEXT_ALWAYS_CHAR ("#include \"");
     myOutputFile << exports_filename.c_str ();
