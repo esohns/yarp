@@ -155,6 +155,7 @@ del /F %Yarp_dir%\client\etc\rpg_graphics.xsd
 mklink "%Yarp_dir%\client\etc\rpg_graphics.xsd" "%Yarp_dir%\graphics\etc\rpg_graphics.xsd"
 del /F %Yarp_dir%\client\etc\rpg_engine.xsd
 mklink "%Yarp_dir%\client\etc\rpg_engine.xsd" "%Yarp_dir%\engine\etc\rpg_engine.xsd"
+echo generating XSD schema links...DONE
 
 echo generating XML data bindings...
 call %Yarp_dir%\chance\dice\scripts\bindings.bat
