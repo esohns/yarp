@@ -21,16 +21,16 @@
 #ifndef XML_HANDLER_H
 #define XML_HANDLER_H
 
-#include "XML_handler_base.h"
-
-#include "iXML_definition_handler.h"
-
-#include "ace/Global_Macros.h"
-
 #include <string>
 #include <fstream>
 #include <vector>
 #include <stack>
+
+#include "ace/Global_Macros.h"
+
+#include "iXML_definition_handler.h"
+
+#include "XML_handler_base.h"
 
 // forward declarations
 class Handle_XMLEnumeration;
@@ -39,9 +39,11 @@ class Handle_XMLSequence;
 XERCES_CPP_NAMESPACE_USE
 
 class XML_Handler
- : public XML_Handler_Base//,
-//    private XMLFormatTarget
+ : public XML_Handler_Base
+// , private XMLFormatTarget
 {
+  typedef XML_Handler_Base inherited;
+
   friend class Handle_XMLEnumeration;
   friend class Handle_XMLSequence;
 
@@ -62,28 +64,26 @@ class XML_Handler
   // Implementation of the SAX ContentHandler interface
   // -----------------------------------------------------------------------
   virtual void endDocument();
-  virtual void endElement(const XMLCh* const,  // uri
-                          const XMLCh* const,  // localname
-                          const XMLCh* const); // qname
-  virtual void setDocumentLocator(const Locator* const); // locator
-  virtual void startDocument();
-  virtual void startElement(const XMLCh* const, // uri
-                            const XMLCh* const, // localname
-                            const XMLCh* const, // qname
-                            const Attributes&); // attrs
+  virtual void endElement (const XMLCh* const,  // uri
+                           const XMLCh* const,  // localname
+                           const XMLCh* const); // qname
+  virtual void setDocumentLocator (const Locator* const); // locator
+  virtual void startDocument ();
+  virtual void startElement (const XMLCh* const, // uri
+                             const XMLCh* const, // localname
+                             const XMLCh* const, // qname
+                             const Attributes&); // attrs
 
   // -----------------------------------------------------------------------
   // Implementation of the SAX ErrorHandler interface
   // -----------------------------------------------------------------------
-  virtual void error(const SAXParseException&); // exception
-  virtual void fatalError(const SAXParseException&); // exception
-  virtual void warning(const SAXParseException&); // exception
+  virtual void error (const SAXParseException&); // exception
+  virtual void fatalError (const SAXParseException&); // exception
+  virtual void warning (const SAXParseException&); // exception
 
  private:
-  typedef XML_Handler_Base inherited;
-
-  ACE_UNIMPLEMENTED_FUNC(XML_Handler(const XML_Handler&));
-  ACE_UNIMPLEMENTED_FUNC(XML_Handler& operator=(const XML_Handler&));
+  ACE_UNIMPLEMENTED_FUNC (XML_Handler (const XML_Handler&));
+  ACE_UNIMPLEMENTED_FUNC (XML_Handler& operator= (const XML_Handler&));
 
   enum XMLElementType
   {
@@ -107,43 +107,43 @@ class XML_Handler
   };
 
   // helper methods
-  XMLElementType stringToXMLElementType(const std::string&) const; // element
-  void insertPreamble(std::ofstream&); // file stream
+  XMLElementType stringToXMLElementType (const std::string&) const; // element
+  void insertPreamble (std::ofstream&); // file stream
   void insertMultipleIncludeProtection (bool,               // use "#pragma once" directive ?
                                         const std::string&, // (header) filename
                                         std::ofstream&);    // file stream
   void insertPostscript(std::ofstream&); // file stream
   typedef std::vector<std::string> XML2CppCode_Headers_t;
-  void insertIncludeHeaders(const XML2CppCode_Headers_t&, // headers
-                            const bool&,                  // include <vector>
-                            std::ofstream&);              // file stream
+  void insertIncludeHeaders (const XML2CppCode_Headers_t&, // headers
+                             bool,                         // include <vector> ?
+                             std::ofstream&);              // file stream
 
   // helper types
   typedef XML2CppCode_Headers_t::const_iterator XML2CppCode_HeadersIterator_t;
   typedef std::stack<IXML_Definition_Handler*> XML2CppCode_Handlers_t;
 
-  XML2CppCode_Handlers_t   myDefinitionHandlers;
+  XML2CppCode_Handlers_t myDefinitionHandlers;
 
-  std::ofstream            myIncludeHeaderFile;
-  std::ofstream            myCurrentOutputFile;
-  bool                     myCurrentHasBaseClass;
-  std::string              myCurrentElementName;
-  bool                     myIsFirstRelevantElement;
-  std::string              myTargetDirectory;
-  bool                     myFilePerDefinition;
-  std::string              mySchemaFilename;
-  std::string              myPreamble;
-  std::string              myEmitClassQualifiers;
-  bool                     myEmitStringConversionUtilities;
-  bool                     myEmitTaggedUnions;
-  bool                     myGenerateIncludeHeader;
-  std::string              myTypePrefix;
-  std::string              myTypePostfix;
-  const Locator*           myLocator;
-//   bool                     myIgnoreCharacters;
-  XML2CppCode_Headers_t    myHeaders;
-  bool                     myHeadersUseStdVector;
-  unsigned int             myCurrentNestingLevel;
+  std::ofstream          myIncludeHeaderFile;
+  std::ofstream          myCurrentOutputFile;
+  bool                   myCurrentHasBaseClass;
+  std::string            myCurrentElementName;
+  bool                   myIsFirstRelevantElement;
+  std::string            myTargetDirectory;
+  bool                   myFilePerDefinition;
+  std::string            mySchemaFilename;
+  std::string            myPreamble;
+  std::string            myEmitClassQualifiers;
+  bool                   myEmitStringConversionUtilities;
+  bool                   myEmitTaggedUnions;
+  bool                   myGenerateIncludeHeader;
+  std::string            myTypePrefix;
+  std::string            myTypePostfix;
+  const Locator*         myLocator;
+//   bool                      myIgnoreCharacters;
+  XML2CppCode_Headers_t  myHeaders;
+  bool                   myHeadersUseStdVector;
+  unsigned int           myCurrentNestingLevel;
 };
 
 #endif
