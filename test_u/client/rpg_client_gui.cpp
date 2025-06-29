@@ -1769,9 +1769,6 @@ continue_:;
                                                                    false); // N/A
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
-  Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
-                                             true,   // wait for completion ?
-                                             false); // release event dispatch singleton(s) ?
 
   COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,   // wait for completion ?
                                                     false); // high priority ?
@@ -1785,6 +1782,10 @@ continue_:;
   level_engine.stop (true); // wait for completion ?
   RPG_Client_Common_Tools::finalize ();
   RPG_Engine_Common_Tools::finalize ();
+
+  Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
+                                             true,   // wait for completion ?
+                                             false); // release event dispatch singleton(s) ?
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));

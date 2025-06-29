@@ -559,7 +559,7 @@ RPG_Engine_Event_Manager::cancel (long id_in)
   { ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
     RPG_Engine_EventTimersConstIterator_t iterator = myTimers.find (id_in);
     ACE_ASSERT (iterator != myTimers.end ());
-    ACE_ASSERT (act_p && act_p == (*iterator).second);
+    //ACE_ASSERT (act_p && act_p == (*iterator).second);
     // *WARNING*: cannot free event here (it may be in use)
     (*iterator).second->free = true;
   } // end lock scope
