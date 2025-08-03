@@ -97,7 +97,7 @@ class RPG_Net_Protocol_ParserDriver
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_ParserDriver& operator= (const RPG_Net_Protocol_ParserDriver&))
 
   // implement Common_ILexScanner_T
-  inline virtual const Common_FlexScannerState& getR () const { static Common_FlexScannerState dummy; ACE_ASSERT (false); ACE_NOTSUP_RETURN (dummy); ACE_NOTREACHED (return dummy;) }
+  //inline virtual const Common_FlexScannerState& getR_2 () const { static Common_FlexScannerState dummy; ACE_ASSERT (false); ACE_NOTSUP_RETURN (dummy); ACE_NOTREACHED (return dummy;) }
   inline virtual const RPG_Net_Protocol_IParser* const getP () const { return this; }
   inline virtual void setP (RPG_Net_Protocol_IParser*) { ACE_ASSERT (false); ACE_NOTSUP; ACE_NOTREACHED (return;) }
   inline virtual void setDebug (yyscan_t state_in, bool toggle_in) { RPG_Net_Protocol_Scanner_set_debug ((toggle_in ? 1 : 0), state_in); }
