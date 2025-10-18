@@ -87,7 +87,6 @@ RPG_Net_Protocol_Stream::initialize (const inherited::CONFIGURATION_T& configura
   //  bool result = false;
   bool setup_pipeline = configuration_in.configuration_->setupPipeline;
   bool reset_setup_pipeline = false;
-  struct RPG_Net_Protocol_SessionData* session_data_p = NULL;
   typename inherited::CONFIGURATION_T::ITERATOR_T iterator;
   struct RPG_Net_Protocol_ModuleHandlerConfiguration* configuration_p = NULL;
   typename inherited::ISTREAM_T::MODULE_T* module_p = NULL;
@@ -108,10 +107,7 @@ RPG_Net_Protocol_Stream::initialize (const inherited::CONFIGURATION_T& configura
   const_cast<typename inherited::CONFIGURATION_T&> (configuration_in).configuration_->setupPipeline =
     setup_pipeline;
   reset_setup_pipeline = false;
-  // sanity check(s)
-  ACE_ASSERT (inherited::sessionData_);
-  session_data_p =
-    &const_cast<struct RPG_Net_Protocol_SessionData&> (inherited::sessionData_->getR ());
+
   // *TODO*: remove type inferences
   // sanity check(s)
   iterator =

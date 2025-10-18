@@ -50,6 +50,9 @@ class Net_Client_SignalHandler
   ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler (const Net_Client_SignalHandler&))
   ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler& operator= (const Net_Client_SignalHandler&))
 
+  // convenient types
+  typedef Common_IStatistic_T<struct Stream_Statistic> ISTATISTIC_T;
+
   struct Common_EventDispatchConfiguration* dispatchConfiguration_;
   RPG_Net_Protocol_ConnectionConfiguration* connectionConfiguration_;
   RPG_Net_Protocol_AsynchConnector_t        asynchConnector_;

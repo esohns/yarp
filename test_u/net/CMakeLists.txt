@@ -84,7 +84,7 @@ if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         ACEStream ACEStream_Miscellaneous ACEStream_Network)
  target_link_libraries (${EXECUTABLE}
-                        ACENetwork ACENetwork_Client)
+                        ACENetwork ACENetwork_Client ACENetwork_Server)
  target_link_libraries (${EXECUTABLE}
                         RPG_Chance RPG_Dice RPG_Common
                         RPG_Character RPG_Magic RPG_Item RPG_Player RPG_Monster
@@ -101,7 +101,7 @@ elseif (WIN32)
                         ${ACE_LIBRARY}
                         Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
-                        ACENetwork ACENetwork_Client
+                        ACENetwork ACENetwork_Client ACENetwork_Server
                         RPG_Dice RPG_Chance RPG_Common
                         RPG_Character RPG_Magic RPG_Item RPG_Combat RPG_Player RPG_Monster
                         RPG_Map RPG_Engine

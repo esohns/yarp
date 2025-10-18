@@ -29,6 +29,7 @@
 #include "common_time_common.h"
 
 #include "stream_common.h"
+#include "stream_session_manager.h"
 
 #include "stream_net_io_stream.h"
 
@@ -38,6 +39,13 @@
 #include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_message.h"
+
+typedef Stream_Session_Manager_T<ACE_MT_SYNCH,
+                                 enum Stream_SessionMessageType,
+                                 struct Stream_SessionManager_Configuration,
+                                 struct RPG_Net_Protocol_SessionData,
+                                 struct Stream_Statistic,
+                                 struct Stream_UserData> RPG_Net_Protocol_SessionData_Manager_t;
 
 typedef Net_Connection_Manager_T<ACE_MT_SYNCH,
                                  ACE_INET_Addr,
@@ -57,11 +65,10 @@ class RPG_Net_Protocol_Stream
                                          enum Stream_StateMachine_ControlState,
                                          struct RPG_Net_Protocol_StreamState,
                                          struct RPG_Net_Protocol_StreamConfiguration,
-                                         Net_StreamStatistic_t,
+                                         struct Stream_Statistic,
                                          Common_Timer_Manager_t,
                                          struct RPG_Net_Protocol_ModuleHandlerConfiguration,
-                                         struct RPG_Net_Protocol_SessionData,
-                                         RPG_Net_Protocol_SessionData_t,
+                                         RPG_Net_Protocol_SessionData_Manager_t,
                                          Stream_ControlMessage_t,
                                          RPG_Net_Protocol_Message,
                                          RPG_Net_Protocol_SessionMessage,
@@ -77,11 +84,10 @@ class RPG_Net_Protocol_Stream
                                          enum Stream_StateMachine_ControlState,
                                          struct RPG_Net_Protocol_StreamState,
                                          struct RPG_Net_Protocol_StreamConfiguration,
-                                         Net_StreamStatistic_t,
+                                         struct Stream_Statistic,
                                          Common_Timer_Manager_t,
                                          struct RPG_Net_Protocol_ModuleHandlerConfiguration,
-                                         struct RPG_Net_Protocol_SessionData,
-                                         RPG_Net_Protocol_SessionData_t,
+                                         RPG_Net_Protocol_SessionData_Manager_t,
                                          Stream_ControlMessage_t,
                                          RPG_Net_Protocol_Message,
                                          RPG_Net_Protocol_SessionMessage,

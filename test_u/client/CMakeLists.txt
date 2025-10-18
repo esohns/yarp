@@ -128,7 +128,7 @@ if (UNIX)
                         ${ACE_LIBRARY}
                         Common CommonError CommonEvent CommonLog CommonTimer CommonUI CommonUI_GTK
                         ACEStream ACEStream_Network
-                        ACENetwork
+                        ACENetwork ACENetwork_Server
                         RPG_Chance RPG_Dice RPG_Common
                         RPG_Character RPG_Magic RPG_Item RPG_Player RPG_Monster
                         RPG_Combat RPG_Map RPG_Graphics RPG_Dice RPG_Common RPG_Sound
@@ -147,7 +147,7 @@ elseif (WIN32)
                         ${ACE_LIBRARY}
                         Common CommonError CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Network
-                        ACENetwork
+                        ACENetwork ACENetwork_Server
                         RPG_Chance RPG_Dice RPG_Common
                         RPG_Character RPG_Magic RPG_Item RPG_Player RPG_Monster
                         RPG_Combat RPG_Map RPG_Graphics RPG_Sound

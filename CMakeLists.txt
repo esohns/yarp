@@ -6,7 +6,7 @@ include (Macros)
 include (OS)
 include (compiler_init)
 
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.5)
 
 include (PrePreToolChain)
 

@@ -61,7 +61,7 @@ struct RPG_Net_Protocol_SessionData
 
   RPG_Net_Protocol_IConnection_t* connection;
   Stream_Net_ConnectionStates_t   connectionStates; // i/o module
-  Net_StreamStatistic_t           statistic;
+  struct Stream_Statistic         statistic;
 };
 typedef Stream_SessionData_T<struct RPG_Net_Protocol_SessionData> RPG_Net_Protocol_SessionData_t;
 
@@ -70,10 +70,8 @@ struct RPG_Net_Protocol_StreamState
 {
   RPG_Net_Protocol_StreamState ()
    : Stream_State ()
-   , sessionData (NULL)
   {}
 
-  struct RPG_Net_Protocol_SessionData* sessionData;
 };
 
 #endif

@@ -205,7 +205,7 @@ Net_Client_SignalHandler::handle (const struct Common_Signal& signal_in)
     ACE_ASSERT (istream_connection_p);
     RPG_Net_Protocol_Stream& stream_r =
       const_cast<RPG_Net_Protocol_Stream&> (istream_connection_p->stream ());
-    Net_IStreamStatisticHandler_t* report_p = &stream_r;
+    ISTATISTIC_T* report_p = &stream_r;
     ACE_ASSERT (report_p);
     try {
       report_p->report ();

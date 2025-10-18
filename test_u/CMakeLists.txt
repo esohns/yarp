@@ -55,8 +55,6 @@ list (APPEND CMAKE_MODULE_PATH
       "${CMAKE_MODULES_PATH}"
       "${CMAKE_HELPERS_PATH}")
 #include (UseBackportedModules)
-cmake_policy (SET CMP0026 OLD)
-cmake_policy (SET CMP0053 OLD)
 include (CreateLaunchers)
 
 add_subdirectory (chance)
