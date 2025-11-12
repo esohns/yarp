@@ -71,6 +71,8 @@ add_subdirectory (sound)
 # phonies
 add_custom_target (test_u ALL
                    COMMENT "building test_u...")
+set_property (TARGET test_u PROPERTY FOLDER "test_u")
+
 add_dependencies (test_u chance_dice chance_rangeToRoll)
 add_dependencies (test_u character_parser character_generator character_generator_gui monster_parser)
 add_dependencies (test_u client_gui)
@@ -91,8 +93,6 @@ if (NOT BUILD_TEST_U)
 endif ()
 
 # ----------------------------------------
-
-#include (CreateLaunchers)
 
 # enable (unit/integration) tests
 #include (CTest)
