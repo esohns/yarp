@@ -23,6 +23,10 @@
 
 #include <string>
 
+#include "ace/Log_Msg.h"
+
+#include "stream_net_defines.h"
+
 const char protocol_stream_name_string_[] = ACE_TEXT_ALWAYS_CHAR ("YarpProtocolNetworkStream");
 
 RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream ()
@@ -31,8 +35,8 @@ RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream ()
  //                 NULL)
  // , runtimeStatistic_ (std::string ("RuntimeStatistic"),
  //                      NULL)
- , IOHandler_ (this,
-               ACE_TEXT_ALWAYS_CHAR ("IOHandler"))
+ , inputHandler_ (this,
+                  ACE_TEXT_ALWAYS_CHAR (MODULE_NET_INPUT_DEFAULT_NAME_STRING))
  , protocolHandler_ (this,
                      ACE_TEXT_ALWAYS_CHAR ("ProtocolHandler"))
  //, eventHandler_ (this,
@@ -40,14 +44,6 @@ RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream"));
 
-}
-
-RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream ()
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream"));
-
-  // *NOTE*: this implements an ordered shutdown on destruction...
-  inherited::shutdown ();
 }
 
 bool
@@ -60,9 +56,10 @@ RPG_Net_Protocol_Stream::load (Stream_ILayout* layout_in,
   //ACE_ASSERT (inherited::configuration_);
   //ACE_ASSERT (inherited::configuration_->moduleHandlerConfiguration);
 
-  Stream_Module_t* module_p = &IOHandler_;
+  Stream_Module_t* module_p = &inputHandler_;
   layout_in->append (module_p, NULL, 0);
   module_p = NULL;
+
   module_p = &protocolHandler_;
   layout_in->append (module_p, NULL, 0);
   module_p = NULL;
@@ -90,7 +87,7 @@ RPG_Net_Protocol_Stream::initialize (const inherited::CONFIGURATION_T& configura
   typename inherited::CONFIGURATION_T::ITERATOR_T iterator;
   struct RPG_Net_Protocol_ModuleHandlerConfiguration* configuration_p = NULL;
   typename inherited::ISTREAM_T::MODULE_T* module_p = NULL;
-  typename inherited::WRITER_T* head_impl_p = NULL;
+  typename inherited::I_WRITER_T* head_impl_p = NULL;
 
   // allocate a new session state, reset stream
   const_cast<typename inherited::CONFIGURATION_T&> (configuration_in).configuration_->setupPipeline =

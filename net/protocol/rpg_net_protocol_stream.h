@@ -97,7 +97,7 @@ class RPG_Net_Protocol_Stream
 
  public:
   RPG_Net_Protocol_Stream ();
-  virtual ~RPG_Net_Protocol_Stream ();
+  inline virtual ~RPG_Net_Protocol_Stream () { inherited::shutdown (); }
 
   // implement (part of) Stream_IStreamControlBase
   virtual bool load (Stream_ILayout*,
@@ -122,8 +122,8 @@ class RPG_Net_Protocol_Stream
 
   // modules
   //Net_Module_RuntimeStatistic_Module runtimeStatistic_;
-  typename inherited::IO_MODULE_T IOHandler_;
-  RPG_Net_Protocol_Marshal_Module protocolHandler_;
+  typename inherited::INPUT_MODULE_T inputHandler_;
+  RPG_Net_Protocol_Marshal_Module    protocolHandler_;
 };
 
 #endif

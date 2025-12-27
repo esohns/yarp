@@ -90,10 +90,10 @@ struct RPG_Net_Protocol_ModuleHandlerConfiguration
 };
 
 struct RPG_Net_Protocol_StreamConfiguration
- : Stream_Configuration
+ : Stream_Net_StreamConfiguration
 {
   RPG_Net_Protocol_StreamConfiguration ()
-   : Stream_Configuration ()
+   : Stream_Net_StreamConfiguration ()
    , crunchMessageBuffers (true)
 #if defined (_DEBUG)
    , debugScanner (false)
