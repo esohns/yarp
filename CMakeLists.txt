@@ -11,7 +11,7 @@ cmake_minimum_required (VERSION 3.5)
 include (PrePreToolChain)
 
 # *NOTE*: sets CMAKE_TOOLCHAIN_FILE, so include BEFORE project()
-include (vcpkg)
+include (vcpkg_support)
 
 project (yarp CXX)
 
