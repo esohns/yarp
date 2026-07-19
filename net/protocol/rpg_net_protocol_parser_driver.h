@@ -72,6 +72,7 @@ class RPG_Net_Protocol_ParserDriver
                       const std::string&); // message
 //  virtual void error (const std::string&); // message
   inline virtual bool hasFinished () const { return scannedBytes_ >= length_; }
+  inline virtual void finished () { ACE_ASSERT (false);  ACE_NOTSUP; ACE_NOTREACHED (return;) }
 
   inline virtual struct RPG_Net_Protocol_Command& current () { return currentRecord_; }
   inline virtual void record (struct RPG_Net_Protocol_Command*& record_in) { record (*record_in); }

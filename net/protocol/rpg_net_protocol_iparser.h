@@ -30,8 +30,22 @@
 
 #include "rpg_net_protocol_common.h"
 
+// forward declarations
+#if !defined YYLTYPE && !defined YYLTYPE_IS_DECLARED
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+};
+#define YYLTYPE_IS_DECLARED 1
+#define YYLTYPE_IS_TRIVIAL 1
+#endif
+
 class RPG_Net_Protocol_IParser
  : public Common_IYaccRecordParser_T<struct Common_FlexBisonParserConfiguration,
+                                     struct YYLTYPE,
                                      struct RPG_Net_Protocol_Command>
  , virtual public Common_ILexScanner_T<struct Common_FlexScannerState,
                                        RPG_Net_Protocol_IParser>
@@ -39,6 +53,7 @@ class RPG_Net_Protocol_IParser
  public:
   // convenient types
   typedef Common_IYaccRecordParser_T<struct Common_FlexBisonParserConfiguration,
+                                     struct YYLTYPE,
                                      struct RPG_Net_Protocol_Command> IPARSER_T;
   typedef Common_ILexScanner_T<struct Common_FlexScannerState,
                                RPG_Net_Protocol_IParser> ISCANNER_T;

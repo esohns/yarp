@@ -34,13 +34,17 @@
 #include "rpg_client_common.h"
 
 class RPG_Client_Network_Manager
- : public Common_IDispatch
+ : public Common_IInitialize_T<RPG_Net_Protocol_ConnectionConfiguration>
+ , public Common_IDispatch
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Client_Network_Manager,
                              ACE_SYNCH_MUTEX>;
 
  public:
+  // implement Common_IInitialize_T
+  inline virtual bool initialize (const RPG_Net_Protocol_ConnectionConfiguration& configuration_in) { configuration_ = &const_cast<RPG_Net_Protocol_ConnectionConfiguration&> (configuration_in); return true; }
+
   void action (const struct RPG_Engine_Action&); // action
   void action (const struct RPG_Client_Action&); // action
 
@@ -56,6 +60,7 @@ class RPG_Client_Network_Manager
 
   virtual void dispatch (void*); // user data
 
+  RPG_Net_Protocol_ConnectionConfiguration*    configuration_;
   std::vector<RPG_Net_Protocol_IConnection_t*> connections_;
 };
 

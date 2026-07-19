@@ -29,7 +29,8 @@
 #include "rpg_net_protocol_network.h"
 
 RPG_Client_Network_Manager::RPG_Client_Network_Manager ()
- : connections_ ()
+ : configuration_ (NULL)
+ , connections_ ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Network_Manager::RPG_Client_Network_Manager"));
 
@@ -59,16 +60,17 @@ RPG_Client_Network_Manager::action (const struct RPG_Engine_Action& action_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Network_Manager::action"));
 
-  RPG_Net_Protocol_Connection_Manager_t* connection_manager_p =
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
-  ACE_ASSERT (connection_manager_p);
-  RPG_Net_Protocol_ConnectionConfiguration* configuration_p = NULL;
-  struct Net_UserData* user_data_p = NULL;
-  connection_manager_p->get (configuration_p,
-                             user_data_p);
-  ACE_ASSERT (configuration_p);
-  ACE_ASSERT (configuration_p->allocatorConfiguration);
-  ACE_ASSERT (configuration_p->messageAllocator);
+  // sanity check(s)
+  ACE_ASSERT (configuration_);
+
+  //RPG_Net_Protocol_Connection_Manager_t* connection_manager_p =
+  //  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+  //ACE_ASSERT (connection_manager_p);
+  //connection_manager_p->get (configuration_p,
+  //                           user_data_p);
+  ACE_ASSERT (configuration_);
+  ACE_ASSERT (configuration_->allocatorConfiguration);
+  ACE_ASSERT (configuration_->messageAllocator);
 
   // send command to peers
   for (std::vector<RPG_Net_Protocol_IConnection_t*>::iterator iterator = connections_.begin ();
@@ -76,7 +78,7 @@ RPG_Client_Network_Manager::action (const struct RPG_Engine_Action& action_in)
        ++iterator)
   {
     RPG_Net_Protocol_Message* message_p =
-      static_cast<RPG_Net_Protocol_Message*> (configuration_p->messageAllocator->malloc (configuration_p->allocatorConfiguration->defaultBufferSize));
+      static_cast<RPG_Net_Protocol_Message*> (configuration_->messageAllocator->malloc (configuration_->allocatorConfiguration->defaultBufferSize));
     ACE_ASSERT (message_p);
 
     struct RPG_Net_Protocol_MessageData message_data_s;
@@ -99,16 +101,17 @@ RPG_Client_Network_Manager::action (const struct RPG_Client_Action& action_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Network_Manager::action"));
 
-  RPG_Net_Protocol_Connection_Manager_t* connection_manager_p =
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
-  ACE_ASSERT (connection_manager_p);
-  RPG_Net_Protocol_ConnectionConfiguration* configuration_p = NULL;
-  struct Net_UserData* user_data_p = NULL;
-  connection_manager_p->get (configuration_p,
-                             user_data_p);
-  ACE_ASSERT (configuration_p);
-  ACE_ASSERT (configuration_p->allocatorConfiguration);
-  ACE_ASSERT (configuration_p->messageAllocator);
+  // sanity check(s)
+  ACE_ASSERT (configuration_);
+
+  //RPG_Net_Protocol_Connection_Manager_t* connection_manager_p =
+  //  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+  //ACE_ASSERT (connection_manager_p);
+  //connection_manager_p->get (configuration_p,
+  //                           user_data_p);
+  ACE_ASSERT (configuration_);
+  ACE_ASSERT (configuration_->allocatorConfiguration);
+  ACE_ASSERT (configuration_->messageAllocator);
 
   // send command to peers
   for (std::vector<RPG_Net_Protocol_IConnection_t*>::iterator iterator = connections_.begin ();
@@ -116,7 +119,7 @@ RPG_Client_Network_Manager::action (const struct RPG_Client_Action& action_in)
        ++iterator)
   {
     RPG_Net_Protocol_Message* message_p =
-      static_cast<RPG_Net_Protocol_Message*> (configuration_p->messageAllocator->malloc (configuration_p->allocatorConfiguration->defaultBufferSize));
+      static_cast<RPG_Net_Protocol_Message*> (configuration_->messageAllocator->malloc (configuration_->allocatorConfiguration->defaultBufferSize));
     ACE_ASSERT (message_p);
 
     struct RPG_Net_Protocol_MessageData message_data_s;

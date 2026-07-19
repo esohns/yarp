@@ -637,9 +637,10 @@ do_work (unsigned int maxNumConnections_in,
   ACE_ASSERT (connection_manager_p);
   connection_manager_p->initialize (maxNumConnections_in,
                                     ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
-  struct Net_UserData user_data_s;
-  connection_manager_p->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
-                             &user_data_s);
+  //struct Net_UserData user_data_s;
+  //connection_manager_p->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
+  //                           &user_data_s);
+  RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ()->initialize (CBData_in.configuration->protocol_configuration.connectionConfiguration);
 
   RPG_Graphics_IWindowBase* map_window_p = main_window.child (WINDOW_MAP);
   ACE_ASSERT (map_window_p);

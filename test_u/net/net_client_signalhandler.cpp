@@ -43,8 +43,8 @@ Net_Client_SignalHandler::Net_Client_SignalHandler (struct Common_EventDispatchC
  : inherited (this) // event handler handle
  , dispatchConfiguration_ (&dispatchConfiguration_in)
  , connectionConfiguration_ (&connectionConfiguration_in)
- , asynchConnector_ (true) // managed ?
- , connector_ (true) // managed ?
+ , asynchConnector_ ()
+ , connector_ ()
  , handle_ (ACE_INVALID_HANDLE)
 {
   RPG_TRACE (ACE_TEXT ("Net_Client_SignalHandler::Net_Client_SignalHandler"));

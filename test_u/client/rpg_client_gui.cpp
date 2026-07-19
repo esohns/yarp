@@ -126,6 +126,7 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_engine.h"
 #include "rpg_client_entity_manager.h"
+#include "rpg_client_network_manager.h"
 #include "rpg_client_ui_tools.h"
 #include "rpg_client_window_level.h"
 #include "rpg_client_window_main.h"
@@ -1167,9 +1168,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   // step5c: initialize connection manager
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max (),
                                                                          ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
-  struct Net_UserData user_data_s;
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration_in.protocol_configuration.connectionConfiguration,
-                                                                  &user_data_s);
+  //struct Net_UserData user_data_s;
+  //RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration_in.protocol_configuration.connectionConfiguration,
+  //                                                                &user_data_s);
+  RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ()->initialize (configuration_in.protocol_configuration.connectionConfiguration);
 
   // step5d: start worker(s)
   int group_id = -1;
