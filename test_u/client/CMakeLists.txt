@@ -31,9 +31,10 @@
 # endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 #endif ()
 
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/sdl/scripts")
+include (sdl)
 
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
 
 if (UNIX)
  include (FindPkgConfig)

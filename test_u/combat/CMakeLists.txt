@@ -1,7 +1,8 @@
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/sdl/scripts")
+include (sdl)
+
 set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/../../scripts")
 include (xerces-c)
-
-include (sdl)
 
 if (UNIX)
  include (FindPkgConfig)

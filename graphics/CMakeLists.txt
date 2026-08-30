@@ -1,12 +1,12 @@
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
-
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
-
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/image/scripts/png.cmake)
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts")
+include (Threads)
+include (ACE)
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/image/scripts")
+include (png)
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/sdl/scripts")
+include (sdl)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/xerces-c.cmake)
-
-include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 
 ########### next target ###############
 set (LIBRARY RPG_Graphics)

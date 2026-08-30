@@ -1,13 +1,13 @@
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
-
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
-
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/scripts/PreUIFramework.cmake)
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/scripts/SetUIFramework.cmake)
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts")
+include (Threads)
+include (ACE)
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/scripts")
+include (PreUIFramework)
+include (SetUIFramework)
 
 if (CURSES_USE)
 elseif (GTK_USE)
- include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/scripts/SetGTKVersion.cmake)
+ include (SetGTKVersion)
 
  if (CMAKE_BUILD_TYPE STREQUAL Debug)
   add_definitions (-DG_ERRORCHECK_MUTEXES)
@@ -35,9 +35,10 @@ elseif (WXWIDGETS_USE)
  endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 endif ()
 
-include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/xerces-c.cmake)
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/sdl/scripts")
+include (sdl)
 
-include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
+include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/xerces-c.cmake)
 
 ########### next target ###############
 set (LIBRARY RPG_Client)
